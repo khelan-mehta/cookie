@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { FiCheck, FiX, FiPhone } from "react-icons/fi";
+import { FiCheck, FiX, FiPhone, FiMapPin } from "react-icons/fi";
 import { Layout } from "../../components/layout/Layout";
 import { Card, CardBody } from "../../components/common/Card";
 import { Button } from "../../components/common/Button";
@@ -12,6 +12,7 @@ import { VetResponseList } from "../../components/distress/VetResponseCard";
 import { ConfirmModal } from "../../components/common/Modal";
 import { useDistress } from "../../context/DistressContext";
 import { usePolling } from "../../hooks/usePolling";
+import { locationService } from "../../services/location";
 import { distressService, type Distress } from "../../services/distress";
 import { ROUTES, DISTRESS_STATUS } from "../../utils/constants";
 
@@ -34,6 +35,50 @@ export const Tracking = () => {
     lat: number;
     lng: number;
   } | null>(null);
+  const [userLiveLocation, setUserLiveLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const locationWatchRef = useRef<number | null>(null);
+
+  // ✅ User location heartbeat - send live location to backend
+  const sendUserLocation = useCallback(async (coords: [number, number]) => {
+    if (!activeDistress?._id) return;
+    try {
+      await locationService.updateDistressLocation(activeDistress._id, coords);
+      console.log('User location sent:', coords);
+    } catch (error) {
+      console.error('Failed to send user location:', error);
+    }
+  }, [activeDistress?._id]);
+
+  // ✅ Start watching user location when tracking active distress
+  useEffect(() => {
+    if (!activeDistress?._id) return;
+
+    const watchId = locationService.watchPosition(
+      (position) => {
+        const coords: [number, number] = [
+          position.coords.longitude,
+          position.coords.latitude,
+        ];
+        setUserLiveLocation({ lng: coords[0], lat: coords[1] });
+        sendUserLocation(coords);
+      },
+      (error) => {
+        console.error('Location watch error:', error);
+      }
+    );
+
+    locationWatchRef.current = watchId;
+
+    return () => {
+      if (locationWatchRef.current !== null) {
+        locationService.clearWatch(locationWatchRef.current);
+        locationWatchRef.current = null;
+      }
+    };
+  }, [activeDistress?._id, sendUserLocation]);
 
   const handleDistressUpdated = useCallback(() => {
     refreshActiveDistress();
@@ -140,12 +185,13 @@ export const Tracking = () => {
     );
   }
 
-  const userLocation = activeDistress.location?.coordinates
+  // ✅ Use live location if available, otherwise fallback to distress location
+  const userLocation = userLiveLocation || (activeDistress.location?.coordinates
     ? {
         lng: activeDistress.location.coordinates[0],
         lat: activeDistress.location.coordinates[1],
       }
-    : undefined;
+    : undefined);
 
   const selectedVetLocation = activeDistress.selectedVetId?.location
     ?.coordinates

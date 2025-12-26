@@ -48,6 +48,12 @@ export const createDistress = async (
         coordinates: location.coordinates,
         address: location.address,
       },
+      // ✅ Initialize userCurrentLocation for tracking
+      userCurrentLocation: {
+        type: 'Point',
+        coordinates: location.coordinates,
+        updatedAt: new Date(),
+      },
       status: 'pending',
     });
 

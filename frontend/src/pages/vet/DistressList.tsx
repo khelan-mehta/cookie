@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiMapPin, FiClock, FiRefreshCw } from 'react-icons/fi';
+import { FiMapPin, FiClock, FiRefreshCw, FiAlertTriangle } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { Layout } from '../../components/layout/Layout';
 import { Card, CardBody } from '../../components/common/Card';
@@ -9,6 +9,7 @@ import { Modal } from '../../components/common/Modal';
 import { TextArea } from '../../components/common/Input';
 import { usePolling } from '../../hooks/usePolling';
 import { distressService, type Distress } from '../../services/distress';
+import { locationService } from '../../services/location';
 import { formatDistance, formatDateTime } from '../../utils/validators';
 import { SEVERITY_COLORS } from '../../utils/constants';
 
@@ -19,12 +20,34 @@ export const DistressList = () => {
   const [responseMode, setResponseMode] = useState<'vet_coming' | 'user_going'>('vet_coming');
   const [responseMessage, setResponseMessage] = useState('');
   const [isResponding, setIsResponding] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+
+  // ✅ Update vet location before loading distresses
+  const updateVetLocationAndLoad = useCallback(async () => {
+    try {
+      const position = await locationService.getCurrentPosition();
+      const coordinates: [number, number] = [
+        position.coords.longitude,
+        position.coords.latitude,
+      ];
+      await locationService.updateVetLocation(coordinates);
+      setLocationError(null);
+      console.log('Vet location updated before loading distresses:', coordinates);
+    } catch (error) {
+      console.error('Failed to update vet location:', error);
+      setLocationError('Could not get your location. Enable location access to see nearby emergencies.');
+    }
+  }, []);
 
   const loadDistresses = useCallback(async () => {
     try {
       const data = await distressService.getNearbyDistresses();
       setDistresses(data.distresses);
-    } catch (err) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      if (error.response?.data?.message?.includes('location')) {
+        setLocationError('Please set your location first');
+      }
       console.error('Failed to load distresses:', err);
     } finally {
       setIsLoading(false);
@@ -32,8 +55,9 @@ export const DistressList = () => {
   }, []);
 
   useEffect(() => {
-    loadDistresses();
-  }, [loadDistresses]);
+    // First update location, then load distresses
+    updateVetLocationAndLoad().then(() => loadDistresses());
+  }, [updateVetLocationAndLoad, loadDistresses]);
 
   // Use HTTP polling instead of WebSocket for real-time updates
   usePolling({
@@ -86,6 +110,16 @@ export const DistressList = () => {
             Refresh
           </Button>
         </div>
+
+        {/* Location Error Banner */}
+        {locationError && (
+          <Card className="mb-4 bg-amber-50 border-amber-200">
+            <CardBody className="flex items-center gap-3">
+              <FiAlertTriangle className="h-5 w-5 text-amber-600" />
+              <p className="text-amber-800 text-sm">{locationError}</p>
+            </CardBody>
+          </Card>
+        )}
 
         {isLoading ? (
           <div className="flex justify-center py-12">
