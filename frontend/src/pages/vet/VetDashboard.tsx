@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { FiAlertCircle, FiShoppingBag, FiUser, FiToggleLeft, FiToggleRight, FiMapPin } from 'react-icons/fi';
+import { FiAlertCircle, FiShoppingBag, FiUser, FiMapPin, FiActivity, FiStar, FiHeart } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { Layout } from '../../components/layout/Layout';
 import { Card, CardBody } from '../../components/common/Card';
@@ -20,7 +20,6 @@ export const VetDashboard = () => {
   const [locationStatus, setLocationStatus] = useState<'unknown' | 'updating' | 'updated' | 'error'>('unknown');
   const locationIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // ✅ Update vet location to backend
   const updateVetLocation = useCallback(async () => {
     try {
       setLocationStatus('updating');
@@ -38,19 +37,14 @@ export const VetDashboard = () => {
     }
   }, []);
 
-  // ✅ Start location heartbeat when available
   const startLocationHeartbeat = useCallback(() => {
-    // Update immediately
     updateVetLocation();
-
-    // Then update every 30 seconds
     if (locationIntervalRef.current) {
       clearInterval(locationIntervalRef.current);
     }
     locationIntervalRef.current = setInterval(updateVetLocation, 30000);
   }, [updateVetLocation]);
 
-  // ✅ Stop location heartbeat
   const stopLocationHeartbeat = useCallback(() => {
     if (locationIntervalRef.current) {
       clearInterval(locationIntervalRef.current);
@@ -58,7 +52,6 @@ export const VetDashboard = () => {
     }
   }, []);
 
-  // ✅ Initialize location on mount if available
   useEffect(() => {
     if (vetProfile?.isAvailable) {
       startLocationHeartbeat();
@@ -90,10 +83,8 @@ export const VetDashboard = () => {
         isAvailable: result.isAvailable,
       });
 
-      // ✅ Start/stop location heartbeat based on availability
       if (result.isAvailable) {
         startLocationHeartbeat();
-        // Reload distresses after location is set
         setTimeout(loadNearbyDistresses, 1000);
         toast.success('You are now available to respond');
       } else {
@@ -111,24 +102,34 @@ export const VetDashboard = () => {
   return (
     <Layout>
       <div className="max-w-4xl mx-auto">
+        {/* Welcome Header */}
         <div className="flex justify-between items-start mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Hello, Dr. {user?.name?.split(' ')[0]}!
-            </h1>
-            <p className="text-gray-600 mt-1">
-              {vetProfile?.clinicName || 'Set up your clinic profile'}
-            </p>
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-[#FFCDC9] rounded-full flex items-center justify-center border-4 border-white shadow-[0_4px_0_#FDACAC]">
+              {user?.avatar ? (
+                <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
+              ) : (
+                <FiHeart className="h-8 w-8 text-[#FD7979]" />
+              )}
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-[#5D4E4E]">
+                Hello, Dr. {user?.name?.split(' ')[0]}!
+              </h1>
+              <p className="text-[#5D4E4E] opacity-70">
+                {vetProfile?.clinicName || 'Set up your clinic profile'}
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
             {/* Location Status Indicator */}
             {vetProfile?.isAvailable && (
-              <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
-                locationStatus === 'updated' ? 'bg-green-100 text-green-700' :
-                locationStatus === 'updating' ? 'bg-blue-100 text-blue-700' :
-                locationStatus === 'error' ? 'bg-red-100 text-red-700' :
-                'bg-gray-100 text-gray-600'
+              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border-2 ${
+                locationStatus === 'updated' ? 'bg-[#D1FAE5] text-[#065F46] border-[#A7F3D0]' :
+                locationStatus === 'updating' ? 'bg-[#FEEAC9] text-[#5D4E4E] border-[#FFCDC9]' :
+                locationStatus === 'error' ? 'bg-red-50 text-[#E05A5A] border-red-200' :
+                'bg-[#FEEAC9] text-[#5D4E4E] border-[#FFCDC9]'
               }`}>
                 <FiMapPin className="h-3 w-3" />
                 {locationStatus === 'updated' ? 'Location synced' :
@@ -142,34 +143,28 @@ export const VetDashboard = () => {
             <button
               onClick={handleToggleAvailability}
               disabled={isTogglingAvailability}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold transition-all shadow-[0_4px_0] hover:shadow-[0_6px_0] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_2px_0] ${
                 vetProfile?.isAvailable
-                  ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-[#10B981] text-white shadow-[#059669] hover:shadow-[#059669] active:shadow-[#059669]'
+                  : 'bg-[#FFCDC9] text-[#5D4E4E] shadow-[#FDACAC] hover:shadow-[#FDACAC] active:shadow-[#FDACAC]'
               }`}
             >
-              {vetProfile?.isAvailable ? (
-                <>
-                  <FiToggleRight className="h-5 w-5" />
-                  Available
-                </>
-              ) : (
-                <>
-                  <FiToggleLeft className="h-5 w-5" />
-                  Unavailable
-                </>
-              )}
+              <FiActivity className="h-4 w-4" />
+              {vetProfile?.isAvailable ? 'Available' : 'Unavailable'}
             </button>
           </div>
         </div>
 
         {/* Setup Alert */}
         {!vetProfile?.clinicName && (
-          <Card className="mb-6 bg-amber-50 border-amber-200">
-            <CardBody>
-              <p className="text-amber-800">
+          <Card className="mb-6 bg-[#FEEAC9] border-[#FFCDC9]">
+            <CardBody className="flex items-center gap-3">
+              <div className="p-2 bg-white rounded-full">
+                <FiAlertCircle className="h-5 w-5 text-[#FD7979]" />
+              </div>
+              <p className="text-[#5D4E4E]">
                 Complete your profile to appear in search results.{' '}
-                <Link to={ROUTES.PROFILE} className="underline font-medium">
+                <Link to={ROUTES.PROFILE} className="underline font-semibold text-[#FD7979]">
                   Set up now
                 </Link>
               </p>
@@ -180,35 +175,49 @@ export const VetDashboard = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <Card>
-            <CardBody className="text-center">
-              <p className="text-3xl font-bold text-rose-500">
+            <CardBody className="text-center py-5">
+              <div className="w-12 h-12 mx-auto mb-3 bg-[#FFCDC9] rounded-full flex items-center justify-center border-2 border-[#FDACAC]">
+                <FiAlertCircle className="h-6 w-6 text-[#FD7979]" />
+              </div>
+              <p className="text-3xl font-bold text-[#FD7979]">
                 {nearbyDistresses.length}
               </p>
-              <p className="text-sm text-gray-600">Active Emergencies</p>
+              <p className="text-sm text-[#5D4E4E] opacity-70">Active Alerts</p>
             </CardBody>
           </Card>
           <Card>
-            <CardBody className="text-center">
-              <p className="text-3xl font-bold text-gray-900">
+            <CardBody className="text-center py-5">
+              <div className="w-12 h-12 mx-auto mb-3 bg-[#FEEAC9] rounded-full flex items-center justify-center border-2 border-[#FFCDC9]">
+                <FiHeart className="h-6 w-6 text-[#FD7979]" />
+              </div>
+              <p className="text-3xl font-bold text-[#5D4E4E]">
                 {vetProfile?.reviewCount || 0}
               </p>
-              <p className="text-sm text-gray-600">Total Responses</p>
+              <p className="text-sm text-[#5D4E4E] opacity-70">Responses</p>
             </CardBody>
           </Card>
           <Card>
-            <CardBody className="text-center">
-              <p className="text-3xl font-bold text-gray-900">
+            <CardBody className="text-center py-5">
+              <div className="w-12 h-12 mx-auto mb-3 bg-[#FEEAC9] rounded-full flex items-center justify-center border-2 border-[#FFCDC9]">
+                <FiStar className="h-6 w-6 text-[#FD7979]" />
+              </div>
+              <p className="text-3xl font-bold text-[#5D4E4E]">
                 {vetProfile?.rating?.toFixed(1) || '-'}
               </p>
-              <p className="text-sm text-gray-600">Rating</p>
+              <p className="text-sm text-[#5D4E4E] opacity-70">Rating</p>
             </CardBody>
           </Card>
           <Card>
-            <CardBody className="text-center">
-              <p className="text-3xl font-bold text-gray-900">
+            <CardBody className="text-center py-5">
+              <div className={`w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center border-2 ${
+                vetProfile?.isAvailable ? 'bg-[#D1FAE5] border-[#A7F3D0]' : 'bg-[#FEEAC9] border-[#FFCDC9]'
+              }`}>
+                <FiActivity className={`h-6 w-6 ${vetProfile?.isAvailable ? 'text-[#10B981]' : 'text-[#FDACAC]'}`} />
+              </div>
+              <p className="text-3xl font-bold text-[#5D4E4E]">
                 {vetProfile?.isAvailable ? 'Yes' : 'No'}
               </p>
-              <p className="text-sm text-gray-600">Available</p>
+              <p className="text-sm text-[#5D4E4E] opacity-70">Available</p>
             </CardBody>
           </Card>
         </div>
@@ -217,12 +226,13 @@ export const VetDashboard = () => {
         <Card className="mb-6">
           <CardBody>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-lg font-bold text-[#5D4E4E] flex items-center gap-2">
+                <FiAlertCircle className="h-5 w-5 text-[#FD7979]" />
                 Nearby Emergencies
               </h2>
               <Link
                 to={ROUTES.VET_DISTRESS_LIST}
-                className="text-rose-600 text-sm hover:underline"
+                className="text-[#FD7979] text-sm font-medium hover:underline"
               >
                 View all
               </Link>
@@ -233,9 +243,11 @@ export const VetDashboard = () => {
                 <Loader />
               </div>
             ) : nearbyDistresses.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <FiAlertCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                <p>No active emergencies nearby</p>
+              <div className="text-center py-8">
+                <div className="w-16 h-16 mx-auto mb-4 bg-[#FEEAC9] rounded-full flex items-center justify-center border-2 border-[#FFCDC9]">
+                  <FiAlertCircle className="h-8 w-8 text-[#FDACAC]" />
+                </div>
+                <p className="text-[#5D4E4E] opacity-70">No active emergencies nearby</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -243,20 +255,20 @@ export const VetDashboard = () => {
                   <Link
                     key={distress._id}
                     to={`${ROUTES.VET_DISTRESS_LIST}?id=${distress._id}`}
-                    className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="block p-4 bg-[#FFF9F0] rounded-xl hover:bg-[#FEEAC9] transition-colors border-2 border-[#FEEAC9]"
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <p className="text-gray-900 line-clamp-2">
+                        <p className="text-[#5D4E4E] line-clamp-2 font-medium">
                           {distress.description}
                         </p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-[#5D4E4E] opacity-70 mt-1">
                           {formatDateTime(distress.createdAt)}
                         </p>
                       </div>
                       <div className="text-right">
                         {distress.distance !== undefined && (
-                          <span className="text-rose-600 font-medium">
+                          <span className="px-3 py-1 bg-[#FD7979] text-white rounded-full text-sm font-semibold">
                             {formatDistance(distress.distance)}
                           </span>
                         )}
@@ -274,9 +286,11 @@ export const VetDashboard = () => {
           <Link to={ROUTES.VET_STORE}>
             <Card hoverable className="h-full">
               <CardBody className="text-center py-6">
-                <FiShoppingBag className="h-8 w-8 mx-auto mb-2 text-rose-500" />
-                <h3 className="font-medium text-gray-900">My Store</h3>
-                <p className="text-sm text-gray-500 mt-1">Manage products</p>
+                <div className="w-14 h-14 mx-auto mb-3 bg-[#FEEAC9] rounded-full flex items-center justify-center border-2 border-[#FFCDC9]">
+                  <FiShoppingBag className="h-7 w-7 text-[#FD7979]" />
+                </div>
+                <h3 className="font-bold text-[#5D4E4E]">My Store</h3>
+                <p className="text-sm text-[#5D4E4E] opacity-70 mt-1">Manage products</p>
               </CardBody>
             </Card>
           </Link>
@@ -284,9 +298,11 @@ export const VetDashboard = () => {
           <Link to={ROUTES.PROFILE}>
             <Card hoverable className="h-full">
               <CardBody className="text-center py-6">
-                <FiUser className="h-8 w-8 mx-auto mb-2 text-rose-500" />
-                <h3 className="font-medium text-gray-900">Profile</h3>
-                <p className="text-sm text-gray-500 mt-1">Clinic settings</p>
+                <div className="w-14 h-14 mx-auto mb-3 bg-[#FEEAC9] rounded-full flex items-center justify-center border-2 border-[#FFCDC9]">
+                  <FiUser className="h-7 w-7 text-[#FD7979]" />
+                </div>
+                <h3 className="font-bold text-[#5D4E4E]">Profile</h3>
+                <p className="text-sm text-[#5D4E4E] opacity-70 mt-1">Clinic settings</p>
               </CardBody>
             </Card>
           </Link>

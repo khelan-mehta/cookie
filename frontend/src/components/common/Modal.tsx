@@ -58,32 +58,32 @@ export const Modal = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+        className="fixed inset-0 bg-[#5D4E4E] bg-opacity-40 transition-opacity"
         onClick={onClose}
       />
 
       <div className="flex min-h-full items-center justify-center p-4">
         <div
-          className={`relative bg-white rounded-xl shadow-xl w-full ${sizes[size]} transform transition-all`}
+          className={`relative bg-white rounded-2xl w-full ${sizes[size]} transform transition-all border-2 border-[#FFCDC9] shadow-[0_8px_0_#FDACAC]`}
           onClick={(e) => e.stopPropagation()}
         >
           {(title || showCloseButton) && (
-            <div className="flex items-center justify-between p-4 border-b">
+            <div className="flex items-center justify-between p-5 border-b-2 border-[#FEEAC9]">
               {title && (
-                <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+                <h3 className="text-lg font-bold text-[#5D4E4E]">{title}</h3>
               )}
               {showCloseButton && (
                 <button
                   onClick={onClose}
-                  className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-full hover:bg-[#FEEAC9] transition-colors border-2 border-transparent hover:border-[#FFCDC9]"
                 >
-                  <FiX className="h-5 w-5 text-gray-500" />
+                  <FiX className="h-5 w-5 text-[#5D4E4E]" />
                 </button>
               )}
             </div>
           )}
 
-          <div className="p-4">{children}</div>
+          <div className="p-5">{children}</div>
         </div>
       </div>
     </div>
@@ -115,11 +115,11 @@ export const ConfirmModal = ({
 }: ConfirmModalProps) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} size="sm">
-      <p className="text-gray-600 mb-6">{message}</p>
+      <p className="text-[#5D4E4E] mb-6">{message}</p>
       <div className="flex gap-3 justify-end">
         <button
           onClick={onClose}
-          className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+          className="px-5 py-2.5 text-[#5D4E4E] bg-[#FEEAC9] rounded-full hover:bg-[#FFCDC9] transition-all font-semibold border-2 border-[#FFCDC9]"
           disabled={isLoading}
         >
           {cancelText}
@@ -127,10 +127,10 @@ export const ConfirmModal = ({
         <button
           onClick={onConfirm}
           disabled={isLoading}
-          className={`px-4 py-2 text-white rounded-lg transition-colors ${
+          className={`px-5 py-2.5 text-white rounded-full transition-all font-semibold shadow-[0_4px_0] hover:shadow-[0_6px_0] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_2px_0] ${
             variant === 'danger'
-              ? 'bg-red-600 hover:bg-red-700'
-              : 'bg-rose-500 hover:bg-rose-600'
+              ? 'bg-[#E05A5A] shadow-[#C03030] hover:shadow-[#C03030] active:shadow-[#C03030]'
+              : 'bg-[#FD7979] shadow-[#E05A5A] hover:shadow-[#E05A5A] active:shadow-[#E05A5A]'
           }`}
         >
           {isLoading ? 'Loading...' : confirmText}

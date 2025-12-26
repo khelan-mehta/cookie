@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FiAlertCircle, FiChevronDown, FiChevronUp, FiInfo } from 'react-icons/fi';
 import type { AIAnalysis } from '../../services/distress';
 import { SEVERITY_COLORS } from '../../utils/constants';
+import { Card, CardBody } from '../common/Card';
 
 interface AIGuidancePanelProps {
   analysis: AIAnalysis | null;
@@ -20,15 +21,21 @@ export const AIGuidancePanel = ({
 
   if (isLoading) {
     return (
-      <div className="bg-blue-50 rounded-xl p-4">
-        <div className="flex items-center gap-2 text-blue-700">
-          <div className="animate-spin h-4 w-4 border-2 border-blue-700 border-t-transparent rounded-full" />
-          <span className="font-medium">Analyzing situation...</span>
-        </div>
-        <p className="text-sm text-blue-600 mt-1">
-          AI is reviewing the information to provide guidance
-        </p>
-      </div>
+      <Card className="bg-[#FEEAC9] border-[#FFCDC9]">
+        <CardBody>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#FFCDC9] rounded-full flex items-center justify-center">
+              <div className="animate-spin h-5 w-5 border-2 border-[#FD7979] border-t-transparent rounded-full" />
+            </div>
+            <div>
+              <span className="font-bold text-[#5D4E4E]">Analyzing situation...</span>
+              <p className="text-sm text-[#5D4E4E] opacity-70">
+                AI is reviewing the information to provide guidance
+              </p>
+            </div>
+          </div>
+        </CardBody>
+      </Card>
     );
   }
 
@@ -39,40 +46,42 @@ export const AIGuidancePanel = ({
   const severityColor = SEVERITY_COLORS[analysis.severity] || SEVERITY_COLORS.medium;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <Card>
       <button
         onClick={() => collapsible && setIsCollapsed(!isCollapsed)}
-        className="w-full px-4 py-3 flex items-center justify-between bg-gray-50"
+        className="w-full px-5 py-4 flex items-center justify-between bg-[#FFF9F0] rounded-t-2xl border-b-2 border-[#FEEAC9]"
         disabled={!collapsible}
       >
-        <div className="flex items-center gap-2">
-          <FiAlertCircle className="h-5 w-5 text-rose-500" />
-          <span className="font-semibold text-gray-900">AI Guidance</span>
-          <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${severityColor}`}>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-[#FFCDC9] rounded-full flex items-center justify-center">
+            <FiAlertCircle className="h-5 w-5 text-[#FD7979]" />
+          </div>
+          <span className="font-bold text-[#5D4E4E]">AI Guidance</span>
+          <span className={`px-3 py-1 text-xs font-bold rounded-full ${severityColor}`}>
             {analysis?.severity?.toUpperCase()}
           </span>
         </div>
         {collapsible && (
           isCollapsed ? (
-            <FiChevronDown className="h-5 w-5 text-gray-500" />
+            <FiChevronDown className="h-5 w-5 text-[#5D4E4E]" />
           ) : (
-            <FiChevronUp className="h-5 w-5 text-gray-500" />
+            <FiChevronUp className="h-5 w-5 text-[#5D4E4E]" />
           )
         )}
       </button>
 
       {!isCollapsed && (
-        <div className="p-4 space-y-4">
+        <CardBody className="space-y-5">
           {analysis.immediateSteps && analysis.immediateSteps.length > 0 && (
             <div>
-              <h4 className="font-medium text-gray-900 mb-2">Immediate Steps</h4>
-              <ul className="space-y-1">
+              <h4 className="font-bold text-[#5D4E4E] mb-3">Immediate Steps</h4>
+              <ul className="space-y-2">
                 {analysis.immediateSteps.map((step, index) => (
-                  <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="flex-shrink-0 w-5 h-5 flex items-center justify-center bg-rose-100 text-rose-600 rounded-full text-xs font-medium">
+                  <li key={index} className="flex items-start gap-3 p-3 bg-[#FFF9F0] rounded-xl">
+                    <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-[#FD7979] text-white rounded-full text-xs font-bold">
                       {index + 1}
                     </span>
-                    {step}
+                    <span className="text-[#5D4E4E] text-sm">{step}</span>
                   </li>
                 ))}
               </ul>
@@ -81,11 +90,11 @@ export const AIGuidancePanel = ({
 
           {analysis.suggestions && analysis.suggestions.length > 0 && (
             <div>
-              <h4 className="font-medium text-gray-900 mb-2">Suggestions</h4>
-              <ul className="space-y-1">
+              <h4 className="font-bold text-[#5D4E4E] mb-3">Suggestions</h4>
+              <ul className="space-y-2">
                 {analysis.suggestions.map((suggestion, index) => (
-                  <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="text-gray-400">•</span>
+                  <li key={index} className="flex items-start gap-3 text-[#5D4E4E] text-sm">
+                    <span className="w-1.5 h-1.5 bg-[#FDACAC] rounded-full mt-2 flex-shrink-0" />
                     {suggestion}
                   </li>
                 ))}
@@ -95,12 +104,12 @@ export const AIGuidancePanel = ({
 
           {analysis.possibleConditions && analysis.possibleConditions.length > 0 && (
             <div>
-              <h4 className="font-medium text-gray-900 mb-2">Possible Conditions</h4>
+              <h4 className="font-bold text-[#5D4E4E] mb-3">Possible Conditions</h4>
               <div className="flex flex-wrap gap-2">
                 {analysis.possibleConditions.map((condition, index) => (
                   <span
                     key={index}
-                    className="px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded-lg"
+                    className="px-3 py-1.5 bg-[#FEEAC9] text-[#5D4E4E] text-sm rounded-full font-medium border-2 border-[#FFCDC9]"
                   >
                     {condition}
                   </span>
@@ -109,16 +118,16 @@ export const AIGuidancePanel = ({
             </div>
           )}
 
-          <div className="flex items-start gap-2 p-3 bg-amber-50 rounded-lg">
-            <FiInfo className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
-            <p className="text-xs text-amber-800">
+          <div className="flex items-start gap-3 p-4 bg-[#FEEAC9] rounded-xl border-2 border-[#FFCDC9]">
+            <FiInfo className="h-5 w-5 text-[#FD7979] mt-0.5 flex-shrink-0" />
+            <p className="text-xs text-[#5D4E4E]">
               This AI guidance is advisory only and should not replace professional
               veterinary care. Always consult a qualified veterinarian for proper
               diagnosis and treatment.
             </p>
           </div>
-        </div>
+        </CardBody>
       )}
-    </div>
+    </Card>
   );
 };

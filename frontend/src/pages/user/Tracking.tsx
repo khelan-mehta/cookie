@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { FiCheck, FiX, FiPhone, FiMapPin } from "react-icons/fi";
+import { FiCheck, FiX, FiPhone, FiMapPin, FiClock, FiNavigation } from "react-icons/fi";
 import { Layout } from "../../components/layout/Layout";
 import { Card, CardBody } from "../../components/common/Card";
 import { Button } from "../../components/common/Button";
@@ -41,7 +41,6 @@ export const Tracking = () => {
   } | null>(null);
   const locationWatchRef = useRef<number | null>(null);
 
-  // ✅ User location heartbeat - send live location to backend
   const sendUserLocation = useCallback(async (coords: [number, number]) => {
     if (!activeDistress?._id) return;
     try {
@@ -52,7 +51,6 @@ export const Tracking = () => {
     }
   }, [activeDistress?._id]);
 
-  // ✅ Start watching user location when tracking active distress
   useEffect(() => {
     if (!activeDistress?._id) return;
 
@@ -94,10 +92,9 @@ export const Tracking = () => {
     []
   );
 
-  // Use HTTP polling instead of WebSocket for real-time updates
   usePolling({
     distressId: activeDistress?._id,
-    pollingInterval: 3000, // Poll every 3 seconds
+    pollingInterval: 3000,
     onDistressUpdated: handleDistressUpdated,
     onDistressResolved: () => {
       toast.success("Emergency resolved!");
@@ -185,7 +182,6 @@ export const Tracking = () => {
     );
   }
 
-  // ✅ Use live location if available, otherwise fallback to distress location
   const userLocation = userLiveLocation || (activeDistress.location?.coordinates
     ? {
         lng: activeDistress.location.coordinates[0],
@@ -210,29 +206,38 @@ export const Tracking = () => {
         <Card
           className={`mb-6 ${
             isInProgress
-              ? "bg-green-50 border-green-200"
-              : "bg-amber-50 border-amber-200"
+              ? "bg-[#D1FAE5] border-[#10B981]"
+              : "bg-[#FFCDC9] border-[#FDACAC]"
           }`}
         >
           <CardBody>
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="font-semibold text-lg text-gray-900">
-                  {isInProgress ? "Help is Coming!" : "Waiting for Responses"}
-                </h2>
-                <p className="text-gray-600 text-sm">
-                  {isInProgress
-                    ? activeDistress.responseMode === "vet_coming"
-                      ? "A vet is on their way to you"
-                      : "Head to the clinic for assistance"
-                    : "Nearby vets have been notified"}
-                </p>
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-4">
+                <div className={`p-3 rounded-full ${isInProgress ? 'bg-white shadow-[0_3px_0_#10B981]' : 'bg-white shadow-[0_3px_0_#FDACAC]'}`}>
+                  {isInProgress ? (
+                    <FiNavigation className="h-6 w-6 text-[#10B981]" />
+                  ) : (
+                    <FiClock className="h-6 w-6 text-[#FD7979]" />
+                  )}
+                </div>
+                <div>
+                  <h2 className="font-bold text-lg text-[#5D4E4E]">
+                    {isInProgress ? "Help is Coming!" : "Waiting for Responses"}
+                  </h2>
+                  <p className="text-[#5D4E4E] opacity-70 text-sm">
+                    {isInProgress
+                      ? activeDistress.responseMode === "vet_coming"
+                        ? "A vet is on their way to you"
+                        : "Head to the clinic for assistance"
+                      : "Nearby vets have been notified"}
+                  </p>
+                </div>
               </div>
               <div
-                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                className={`px-4 py-2 rounded-full text-sm font-bold ${
                   isInProgress
-                    ? "bg-green-100 text-green-800"
-                    : "bg-amber-100 text-amber-800"
+                    ? "bg-[#10B981] text-white shadow-[0_3px_0_#059669]"
+                    : "bg-[#FD7979] text-white shadow-[0_3px_0_#E05A5A]"
                 }`}
               >
                 {activeDistress.status.replace("_", " ").toUpperCase()}
@@ -244,7 +249,7 @@ export const Tracking = () => {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Map */}
-          <Card className="lg:row-span-2">
+          <Card className="lg:row-span-2 overflow-hidden">
             <CardBody className="p-0">
               <LiveMap
                 userLocation={userLocation}
@@ -294,24 +299,25 @@ export const Tracking = () => {
             {activeDistress.selectedVetId && (
               <Card>
                 <CardBody>
-                  <h3 className="font-semibold text-gray-900 mb-3">
+                  <h3 className="font-bold text-[#5D4E4E] mb-4 flex items-center gap-2">
+                    <FiMapPin className="h-5 w-5 text-[#FD7979]" />
                     Your Helper
                   </h3>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 p-4 bg-[#FFF9F0] rounded-xl border-2 border-[#FEEAC9]">
                     <div className="flex-1">
-                      <p className="font-medium">
+                      <p className="font-bold text-[#5D4E4E]">
                         {activeDistress.selectedVetId.clinicName ||
                           "Veterinary Clinic"}
                       </p>
                       {activeDistress.selectedVetId.clinicAddress && (
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-[#5D4E4E] opacity-70 mt-1">
                           {activeDistress.selectedVetId.clinicAddress}
                         </p>
                       )}
                     </div>
                     <a
                       href={`tel:${activeDistress.userId.phone}`}
-                      className="p-3 bg-green-100 text-green-600 rounded-full hover:bg-green-200"
+                      className="p-3 bg-[#10B981] text-white rounded-full hover:bg-[#059669] transition-colors shadow-[0_3px_0_#059669]"
                     >
                       <FiPhone className="h-5 w-5" />
                     </a>
@@ -326,8 +332,9 @@ export const Tracking = () => {
                 <Button
                   onClick={() => setShowResolveModal(true)}
                   className="flex-1"
+                  size="lg"
                 >
-                  <FiCheck className="mr-2 h-4 w-4" />
+                  <FiCheck className="mr-2 h-5 w-5" />
                   Mark Resolved
                 </Button>
               ) : (
@@ -335,8 +342,9 @@ export const Tracking = () => {
                   variant="danger"
                   onClick={() => setShowCancelModal(true)}
                   className="flex-1"
+                  size="lg"
                 >
-                  <FiX className="mr-2 h-4 w-4" />
+                  <FiX className="mr-2 h-5 w-5" />
                   Cancel Emergency
                 </Button>
               )}

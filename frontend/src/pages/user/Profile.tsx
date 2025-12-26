@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiUser, FiPhone, FiMail, FiClock } from 'react-icons/fi';
+import { FiUser, FiPhone, FiMail, FiClock, FiEdit2, FiHeart } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { Layout } from '../../components/layout/Layout';
 import { Card, CardBody, CardHeader } from '../../components/common/Card';
@@ -66,45 +66,60 @@ export const Profile = () => {
     }
   };
 
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'resolved':
+        return 'bg-[#D1FAE5] text-[#065F46] border-2 border-[#A7F3D0]';
+      case 'cancelled':
+        return 'bg-[#FEEAC9] text-[#5D4E4E] border-2 border-[#FFCDC9]';
+      default:
+        return 'bg-[#FFCDC9] text-[#5D4E4E] border-2 border-[#FDACAC]';
+    }
+  };
+
   return (
     <Layout>
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Profile</h1>
+        <h1 className="text-2xl font-bold text-[#5D4E4E] mb-6">Profile</h1>
 
         {/* Profile Info */}
         <Card className="mb-6">
           <CardBody>
             <div className="flex items-start gap-4">
-              {user?.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={user.name}
-                  className="h-16 w-16 rounded-full"
-                />
-              ) : (
-                <div className="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center">
-                  <FiUser className="h-8 w-8 text-gray-400" />
-                </div>
-              )}
-
-              <div className="flex-1">
-                <h2 className="text-xl font-semibold text-gray-900">{user?.name}</h2>
-                <div className="flex items-center gap-2 text-gray-600 mt-1">
-                  <FiMail className="h-4 w-4" />
-                  <span>{user?.email}</span>
-                </div>
-                {user?.phone && (
-                  <div className="flex items-center gap-2 text-gray-600 mt-1">
-                    <FiPhone className="h-4 w-4" />
-                    <span>{user.phone}</span>
+              <div className="relative">
+                {user?.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name}
+                    className="h-20 w-20 rounded-full border-4 border-[#FFCDC9] shadow-[0_4px_0_#FDACAC]"
+                  />
+                ) : (
+                  <div className="h-20 w-20 rounded-full bg-[#FFCDC9] flex items-center justify-center border-4 border-white shadow-[0_4px_0_#FDACAC]">
+                    <FiUser className="h-10 w-10 text-[#FD7979]" />
                   </div>
                 )}
-                <span className="inline-block mt-2 px-2 py-1 bg-rose-100 text-rose-700 text-sm rounded-full">
+              </div>
+
+              <div className="flex-1">
+                <h2 className="text-xl font-bold text-[#5D4E4E]">{user?.name}</h2>
+                <div className="flex items-center gap-2 text-[#5D4E4E] opacity-70 mt-2">
+                  <FiMail className="h-4 w-4" />
+                  <span className="text-sm">{user?.email}</span>
+                </div>
+                {user?.phone && (
+                  <div className="flex items-center gap-2 text-[#5D4E4E] opacity-70 mt-1">
+                    <FiPhone className="h-4 w-4" />
+                    <span className="text-sm">{user.phone}</span>
+                  </div>
+                )}
+                <span className="inline-flex items-center gap-1.5 mt-3 px-3 py-1.5 bg-[#FFCDC9] text-[#5D4E4E] text-sm rounded-full font-medium border-2 border-[#FDACAC]">
+                  <FiHeart className="h-3.5 w-3.5 text-[#FD7979]" />
                   {user?.role === 'vet' ? 'Vet / Helper' : 'Pet Parent'}
                 </span>
               </div>
 
-              <Button variant="ghost" onClick={handleEdit}>
+              <Button variant="ghost" onClick={handleEdit} size="sm">
+                <FiEdit2 className="h-4 w-4 mr-1" />
                 Edit
               </Button>
             </div>
@@ -114,7 +129,10 @@ export const Profile = () => {
         {/* Distress History */}
         <Card>
           <CardHeader>
-            <h3 className="font-semibold text-gray-900">Emergency History</h3>
+            <h3 className="font-bold text-[#5D4E4E] flex items-center gap-2">
+              <FiClock className="h-5 w-5 text-[#FD7979]" />
+              Emergency History
+            </h3>
           </CardHeader>
           <CardBody>
             {isLoadingHistory ? (
@@ -122,33 +140,32 @@ export const Profile = () => {
                 <Loader />
               </div>
             ) : history?.distresses.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">
-                No emergency history yet
-              </p>
+              <div className="text-center py-8">
+                <div className="w-16 h-16 mx-auto mb-4 bg-[#FEEAC9] rounded-full flex items-center justify-center border-2 border-[#FFCDC9]">
+                  <FiClock className="h-8 w-8 text-[#FDACAC]" />
+                </div>
+                <p className="text-[#5D4E4E] opacity-70">No emergency history yet</p>
+              </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {history?.distresses.map((distress) => (
                   <div
                     key={distress._id}
-                    className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
+                    className="flex items-start gap-3 p-4 bg-[#FFF9F0] rounded-xl border-2 border-[#FEEAC9]"
                   >
-                    <FiClock className="h-5 w-5 text-gray-400 mt-0.5" />
+                    <div className="p-2 bg-[#FFCDC9] rounded-full">
+                      <FiClock className="h-4 w-4 text-[#FD7979]" />
+                    </div>
                     <div className="flex-1">
-                      <p className="text-gray-900 line-clamp-2">
+                      <p className="text-[#5D4E4E] line-clamp-2 font-medium">
                         {distress.description}
                       </p>
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-sm text-[#5D4E4E] opacity-70 mt-1">
                         {formatDateTime(distress.createdAt)}
                       </p>
                     </div>
                     <span
-                      className={`px-2 py-1 text-xs rounded-full ${
-                        distress.status === 'resolved'
-                          ? 'bg-green-100 text-green-700'
-                          : distress.status === 'cancelled'
-                          ? 'bg-gray-100 text-gray-700'
-                          : 'bg-amber-100 text-amber-700'
-                      }`}
+                      className={`px-3 py-1 text-xs rounded-full font-semibold capitalize ${getStatusStyle(distress.status)}`}
                     >
                       {distress.status}
                     </span>
@@ -183,6 +200,7 @@ export const Profile = () => {
                   phone: e.target.value.replace(/\D/g, '').slice(0, 10),
                 }))
               }
+              placeholder="10-digit phone number"
             />
             <div className="flex gap-3 justify-end mt-6">
               <Button

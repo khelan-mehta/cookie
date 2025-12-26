@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiSearch, FiPhone } from 'react-icons/fi';
+import { FiSearch, FiPhone, FiShoppingBag, FiTag } from 'react-icons/fi';
 import { Layout } from '../../components/layout/Layout';
 import { Card, CardBody } from '../../components/common/Card';
 import { Input } from '../../components/common/Input';
@@ -56,7 +56,16 @@ export const Store = () => {
   return (
     <Layout>
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Pet Store</h1>
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-12 h-12 bg-[#FD7979] rounded-full flex items-center justify-center shadow-[0_4px_0_#E05A5A]">
+            <FiShoppingBag className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-[#5D4E4E]">Pet Store</h1>
+            <p className="text-[#5D4E4E] opacity-70 text-sm">Browse medical supplies from local vets</p>
+          </div>
+        </div>
 
         {/* Search */}
         <div className="flex gap-3 mb-6">
@@ -80,7 +89,10 @@ export const Store = () => {
           </div>
         ) : products.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500">No products found</p>
+            <div className="w-20 h-20 mx-auto mb-4 bg-[#FEEAC9] rounded-full flex items-center justify-center border-2 border-[#FFCDC9]">
+              <FiShoppingBag className="h-10 w-10 text-[#FDACAC]" />
+            </div>
+            <p className="text-[#5D4E4E] opacity-70">No products found</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -94,18 +106,18 @@ export const Store = () => {
                   <img
                     src={product.imageUrl}
                     alt={product.name}
-                    className="w-full h-40 object-cover rounded-t-xl"
+                    className="w-full h-40 object-cover rounded-t-2xl"
                   />
                 )}
                 <CardBody>
-                  <h3 className="font-semibold text-gray-900 line-clamp-1">
+                  <h3 className="font-bold text-[#5D4E4E] line-clamp-1">
                     {product.name}
                   </h3>
-                  <p className="text-rose-600 font-medium mt-1">
+                  <p className="text-[#FD7979] font-bold mt-1 text-lg">
                     {formatPrice(product.price)}
                   </p>
                   {product.vetId?.clinicName && (
-                    <p className="text-sm text-gray-500 mt-2 line-clamp-1">
+                    <p className="text-sm text-[#5D4E4E] opacity-70 mt-2 line-clamp-1">
                       By {product.vetId.clinicName}
                     </p>
                   )}
@@ -128,42 +140,40 @@ export const Store = () => {
                 <img
                   src={selectedProduct.imageUrl}
                   alt={selectedProduct.name}
-                  className="w-full h-48 object-cover rounded-lg mb-4"
+                  className="w-full h-48 object-cover rounded-xl mb-4 border-2 border-[#FFCDC9]"
                 />
               )}
 
-              <div className="space-y-3">
-                <div>
-                  <p className="text-2xl font-bold text-rose-600">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-2xl font-bold text-[#FD7979]">
                     {formatPrice(selectedProduct.price)}
                   </p>
+                  {selectedProduct.category && (
+                    <span className="px-3 py-1.5 bg-[#FEEAC9] text-[#5D4E4E] text-sm rounded-full font-medium border-2 border-[#FFCDC9] flex items-center gap-1.5">
+                      <FiTag className="h-3.5 w-3.5" />
+                      {selectedProduct.category}
+                    </span>
+                  )}
                 </div>
 
                 {selectedProduct.description && (
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-1">Description</h4>
-                    <p className="text-gray-600">{selectedProduct.description}</p>
-                  </div>
-                )}
-
-                {selectedProduct.category && (
-                  <div>
-                    <span className="px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
-                      {selectedProduct.category}
-                    </span>
+                  <div className="p-4 bg-[#FFF9F0] rounded-xl border-2 border-[#FEEAC9]">
+                    <h4 className="font-bold text-[#5D4E4E] mb-2">Description</h4>
+                    <p className="text-[#5D4E4E] opacity-80">{selectedProduct.description}</p>
                   </div>
                 )}
 
                 {selectedProduct.vetId && (
-                  <div className="pt-4 border-t">
-                    <h4 className="font-medium text-gray-900 mb-2">Sold by</h4>
-                    <div className="flex items-center justify-between">
+                  <div className="pt-4 border-t-2 border-[#FEEAC9]">
+                    <h4 className="font-bold text-[#5D4E4E] mb-3">Sold by</h4>
+                    <div className="flex items-center justify-between p-4 bg-[#FFF9F0] rounded-xl border-2 border-[#FEEAC9]">
                       <div>
-                        <p className="font-medium">
+                        <p className="font-bold text-[#5D4E4E]">
                           {selectedProduct.vetId.clinicName || 'Veterinary Clinic'}
                         </p>
                         {selectedProduct.vetId.clinicAddress && (
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-[#5D4E4E] opacity-70 mt-1">
                             {selectedProduct.vetId.clinicAddress}
                           </p>
                         )}

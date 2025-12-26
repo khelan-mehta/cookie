@@ -39,14 +39,12 @@ export const ImageUpload = ({
     setIsUploading(true);
 
     try {
-      // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
         setPreview(e.target?.result as string);
       };
       reader.readAsDataURL(file);
 
-      // Compress and upload
       const compressedFile = await uploadService.compressImage(file);
       const { imageUrl } = await uploadService.uploadDistressImage(compressedFile);
       onImageUploaded(imageUrl);
@@ -73,19 +71,21 @@ export const ImageUpload = ({
         <img
           src={preview}
           alt="Preview"
-          className="w-full h-48 object-cover rounded-lg"
+          className="w-full h-48 object-cover rounded-xl border-2 border-[#FFCDC9]"
         />
         {isUploading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-            <Loader color="text-white" />
+          <div className="absolute inset-0 flex items-center justify-center bg-[#5D4E4E] bg-opacity-50 rounded-xl">
+            <div className="bg-white p-4 rounded-xl">
+              <Loader color="text-[#FD7979]" />
+            </div>
           </div>
         )}
         {!isUploading && (
           <button
             onClick={handleClear}
-            className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md hover:bg-gray-100"
+            className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-[#FEEAC9] border-2 border-[#FFCDC9] transition-colors"
           >
-            <FiX className="h-5 w-5 text-gray-600" />
+            <FiX className="h-5 w-5 text-[#5D4E4E]" />
           </button>
         )}
       </div>
@@ -93,7 +93,7 @@ export const ImageUpload = ({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex gap-3">
         <input
           ref={cameraInputRef}
@@ -132,13 +132,15 @@ export const ImageUpload = ({
         </Button>
       </div>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-sm text-[#E05A5A] font-medium">{error}</p>}
 
-      <div className="flex items-center justify-center h-32 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
-        <div className="text-center text-gray-500">
-          <FiImage className="mx-auto h-8 w-8 mb-2" />
-          <p className="text-sm">Take a photo or upload an image</p>
-          <p className="text-xs">(Optional but helps with assessment)</p>
+      <div className="flex items-center justify-center h-32 border-2 border-dashed border-[#FFCDC9] rounded-xl bg-[#FFF9F0]">
+        <div className="text-center">
+          <div className="w-12 h-12 mx-auto mb-2 bg-[#FEEAC9] rounded-full flex items-center justify-center">
+            <FiImage className="h-6 w-6 text-[#FDACAC]" />
+          </div>
+          <p className="text-sm text-[#5D4E4E] font-medium">Take a photo or upload an image</p>
+          <p className="text-xs text-[#5D4E4E] opacity-70">(Optional but helps with assessment)</p>
         </div>
       </div>
     </div>

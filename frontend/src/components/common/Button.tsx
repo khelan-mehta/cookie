@@ -17,19 +17,23 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+    'inline-flex items-center justify-center font-semibold rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none';
 
   const variants = {
-    primary: 'bg-rose-500 text-white hover:bg-rose-600 focus:ring-rose-500',
-    secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
-    ghost: 'bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500',
+    primary:
+      'bg-[#FD7979] text-white hover:bg-[#E86A6A] focus:ring-[#FD7979] shadow-[0_4px_0_#E05A5A] hover:shadow-[0_6px_0_#E05A5A] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_2px_0_#E05A5A]',
+    secondary:
+      'bg-[#FFCDC9] text-[#5D4E4E] hover:bg-[#FDACAC] focus:ring-[#FDACAC] shadow-[0_4px_0_#FDACAC] hover:shadow-[0_6px_0_#FDACAC] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_2px_0_#FDACAC]',
+    danger:
+      'bg-[#E05A5A] text-white hover:bg-[#D04545] focus:ring-[#E05A5A] shadow-[0_4px_0_#C03030] hover:shadow-[0_6px_0_#C03030] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_2px_0_#C03030]',
+    ghost:
+      'bg-transparent text-[#5D4E4E] hover:bg-[#FEEAC9] focus:ring-[#FDACAC] border-2 border-[#FFCDC9] hover:border-[#FDACAC]',
   };
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
+    sm: 'px-4 py-1.5 text-sm',
+    md: 'px-6 py-2.5 text-base',
+    lg: 'px-8 py-3.5 text-lg',
   };
 
   return (

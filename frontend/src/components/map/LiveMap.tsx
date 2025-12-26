@@ -28,7 +28,7 @@ const mapContainerStyle = {
 
 const defaultCenter = {
   lat: 20.5937,
-  lng: 78.9629, // India center
+  lng: 78.9629,
 };
 
 const mapOptions: google.maps.MapOptions = {
@@ -37,6 +37,18 @@ const mapOptions: google.maps.MapOptions = {
   streetViewControl: false,
   mapTypeControl: false,
   fullscreenControl: true,
+  styles: [
+    {
+      featureType: 'all',
+      elementType: 'geometry',
+      stylers: [{ saturation: -20 }]
+    },
+    {
+      featureType: 'poi',
+      elementType: 'labels',
+      stylers: [{ visibility: 'off' }]
+    }
+  ]
 };
 
 export const LiveMap = ({
@@ -91,22 +103,27 @@ export const LiveMap = ({
 
   if (loadError) {
     return (
-      <div className={`flex items-center justify-center bg-gray-100 ${className}`}>
-        <p className="text-gray-500">Failed to load map</p>
+      <div className={`flex items-center justify-center bg-[#FEEAC9] rounded-xl ${className}`}>
+        <div className="text-center p-6">
+          <div className="w-16 h-16 mx-auto mb-4 bg-[#FFCDC9] rounded-full flex items-center justify-center">
+            <span className="text-[#FD7979] text-2xl font-bold">!</span>
+          </div>
+          <p className="text-[#5D4E4E] font-medium">Failed to load map</p>
+        </div>
       </div>
     );
   }
 
   if (!isLoaded) {
     return (
-      <div className={`flex items-center justify-center bg-gray-100 ${className}`}>
+      <div className={`flex items-center justify-center bg-[#FEEAC9] rounded-xl ${className}`}>
         <Loader text="Loading map..." />
       </div>
     );
   }
 
   return (
-    <div className={className}>
+    <div className={`rounded-xl overflow-hidden border-2 border-[#FFCDC9] ${className}`}>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={center}
@@ -119,11 +136,11 @@ export const LiveMap = ({
             position={userLocation}
             icon={{
               url: 'data:image/svg+xml,' + encodeURIComponent(`
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#EF4444" width="32" height="32">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FD7979" width="40" height="40">
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                 </svg>
               `),
-              scaledSize: new google.maps.Size(32, 32),
+              scaledSize: new google.maps.Size(40, 40),
             }}
             title="Your Location"
           />
@@ -134,17 +151,28 @@ export const LiveMap = ({
             position={vetLocation}
             icon={{
               url: 'data:image/svg+xml,' + encodeURIComponent(`
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#10B981" width="32" height="32">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#10B981" width="40" height="40">
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                 </svg>
               `),
-              scaledSize: new google.maps.Size(32, 32),
+              scaledSize: new google.maps.Size(40, 40),
             }}
             title="Vet Location"
           />
         )}
 
-        {directions && <DirectionsRenderer directions={directions} />}
+        {directions && (
+          <DirectionsRenderer
+            directions={directions}
+            options={{
+              polylineOptions: {
+                strokeColor: '#FD7979',
+                strokeWeight: 4,
+              },
+              suppressMarkers: true,
+            }}
+          />
+        )}
       </GoogleMap>
     </div>
   );

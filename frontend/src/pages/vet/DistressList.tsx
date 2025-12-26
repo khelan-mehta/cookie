@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiMapPin, FiClock, FiRefreshCw, FiAlertTriangle } from 'react-icons/fi';
+import { FiMapPin, FiClock, FiRefreshCw, FiAlertTriangle, FiAlertCircle, FiNavigation, FiHome } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { Layout } from '../../components/layout/Layout';
 import { Card, CardBody } from '../../components/common/Card';
@@ -22,7 +22,6 @@ export const DistressList = () => {
   const [isResponding, setIsResponding] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
 
-  // ✅ Update vet location before loading distresses
   const updateVetLocationAndLoad = useCallback(async () => {
     try {
       const position = await locationService.getCurrentPosition();
@@ -55,17 +54,15 @@ export const DistressList = () => {
   }, []);
 
   useEffect(() => {
-    // First update location, then load distresses
     updateVetLocationAndLoad().then(() => loadDistresses());
   }, [updateVetLocationAndLoad, loadDistresses]);
 
-  // Use HTTP polling instead of WebSocket for real-time updates
   usePolling({
-    pollingInterval: 5000, // Poll every 5 seconds for nearby distresses
+    pollingInterval: 5000,
     onNewDistress: (data) => {
       if (data.distresses && data.distresses.length > 0) {
         loadDistresses();
-        toast('New emergency nearby!', { icon: '🚨' });
+        toast('New emergency nearby!', { icon: '!' });
       }
     },
     enabled: true,
@@ -98,7 +95,15 @@ export const DistressList = () => {
     <Layout>
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Nearby Emergencies</h1>
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-[#FD7979] rounded-full flex items-center justify-center shadow-[0_4px_0_#E05A5A]">
+              <FiAlertCircle className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-[#5D4E4E]">Nearby Emergencies</h1>
+              <p className="text-[#5D4E4E] opacity-70 text-sm">Respond to pets in need</p>
+            </div>
+          </div>
           <Button
             variant="ghost"
             onClick={() => {
@@ -113,10 +118,12 @@ export const DistressList = () => {
 
         {/* Location Error Banner */}
         {locationError && (
-          <Card className="mb-4 bg-amber-50 border-amber-200">
+          <Card className="mb-4 bg-[#FEEAC9] border-[#FFCDC9]">
             <CardBody className="flex items-center gap-3">
-              <FiAlertTriangle className="h-5 w-5 text-amber-600" />
-              <p className="text-amber-800 text-sm">{locationError}</p>
+              <div className="p-2 bg-white rounded-full">
+                <FiAlertTriangle className="h-5 w-5 text-[#FD7979]" />
+              </div>
+              <p className="text-[#5D4E4E] text-sm font-medium">{locationError}</p>
             </CardBody>
           </Card>
         )}
@@ -128,8 +135,11 @@ export const DistressList = () => {
         ) : distresses.length === 0 ? (
           <Card>
             <CardBody className="text-center py-12">
-              <p className="text-gray-500">No active emergencies in your area</p>
-              <p className="text-sm text-gray-400 mt-2">
+              <div className="w-20 h-20 mx-auto mb-4 bg-[#FEEAC9] rounded-full flex items-center justify-center border-2 border-[#FFCDC9]">
+                <FiAlertCircle className="h-10 w-10 text-[#FDACAC]" />
+              </div>
+              <p className="text-[#5D4E4E] font-medium">No active emergencies in your area</p>
+              <p className="text-sm text-[#5D4E4E] opacity-70 mt-2">
                 Make sure your location is set in your profile
               </p>
             </CardBody>
@@ -139,40 +149,40 @@ export const DistressList = () => {
             {distresses.map((distress) => (
               <Card key={distress._id}>
                 <CardBody>
-                  <div className="flex justify-between items-start mb-3">
+                  <div className="flex justify-between items-start mb-4">
                     <div className="flex-1">
                       {distress.aiAnalysis?.severity && (
                         <span
-                          className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full mb-2 ${
+                          className={`inline-block px-3 py-1 text-xs font-bold rounded-full mb-3 ${
                             SEVERITY_COLORS[distress.aiAnalysis.severity]
                           }`}
                         >
                           {distress.aiAnalysis.severity.toUpperCase()}
                         </span>
                       )}
-                      <p className="text-gray-900">{distress.description}</p>
+                      <p className="text-[#5D4E4E] font-medium">{distress.description}</p>
                     </div>
                     {distress.imageUrl && (
                       <img
                         src={distress.imageUrl}
                         alt="Emergency"
-                        className="w-20 h-20 object-cover rounded-lg ml-4"
+                        className="w-20 h-20 object-cover rounded-xl ml-4 border-2 border-[#FFCDC9]"
                       />
                     )}
                   </div>
 
-                  <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+                  <div className="flex items-center gap-4 text-sm text-[#5D4E4E] mb-4 flex-wrap">
                     {distress.distance !== undefined && (
-                      <div className="flex items-center gap-1">
-                        <FiMapPin className="h-4 w-4" />
-                        <span>{formatDistance(distress.distance)}</span>
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FEEAC9] rounded-full">
+                        <FiMapPin className="h-4 w-4 text-[#FD7979]" />
+                        <span className="font-medium">{formatDistance(distress.distance)}</span>
                       </div>
                     )}
-                    <div className="flex items-center gap-1">
-                      <FiClock className="h-4 w-4" />
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FFF9F0] rounded-full border border-[#FEEAC9]">
+                      <FiClock className="h-4 w-4 text-[#FDACAC]" />
                       <span>{formatDateTime(distress.createdAt)}</span>
                     </div>
-                    <span className="text-gray-400">
+                    <span className="text-[#5D4E4E] opacity-70">
                       {distress.responses.length} response(s)
                     </span>
                   </div>
@@ -180,6 +190,7 @@ export const DistressList = () => {
                   <Button
                     onClick={() => setSelectedDistress(distress)}
                     className="w-full"
+                    size="lg"
                   >
                     Respond to Emergency
                   </Button>
@@ -197,36 +208,46 @@ export const DistressList = () => {
           size="lg"
         >
           {selectedDistress && (
-            <div className="space-y-4">
-              <div>
-                <h4 className="font-medium text-gray-900 mb-2">Emergency Details</h4>
-                <p className="text-gray-600 text-sm">{selectedDistress.description}</p>
+            <div className="space-y-5">
+              <div className="p-4 bg-[#FFF9F0] rounded-xl border-2 border-[#FEEAC9]">
+                <h4 className="font-bold text-[#5D4E4E] mb-2">Emergency Details</h4>
+                <p className="text-[#5D4E4E] opacity-80 text-sm">{selectedDistress.description}</p>
               </div>
 
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Response Mode</h4>
+                <h4 className="font-bold text-[#5D4E4E] mb-3">Response Mode</h4>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => setResponseMode('vet_coming')}
-                    className={`p-3 border-2 rounded-lg text-center transition-colors ${
+                    className={`p-4 border-2 rounded-xl text-center transition-all ${
                       responseMode === 'vet_coming'
-                        ? 'border-rose-500 bg-rose-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-[#FD7979] bg-[#FFCDC9] shadow-[0_3px_0_#FDACAC]'
+                        : 'border-[#FFCDC9] hover:border-[#FDACAC] bg-white'
                     }`}
                   >
-                    <p className="font-medium">I'll come to you</p>
-                    <p className="text-sm text-gray-500">Visit the location</p>
+                    <div className={`w-10 h-10 mx-auto mb-2 rounded-full flex items-center justify-center ${
+                      responseMode === 'vet_coming' ? 'bg-[#FD7979]' : 'bg-[#FEEAC9]'
+                    }`}>
+                      <FiNavigation className={`h-5 w-5 ${responseMode === 'vet_coming' ? 'text-white' : 'text-[#FDACAC]'}`} />
+                    </div>
+                    <p className="font-bold text-[#5D4E4E]">I'll come to you</p>
+                    <p className="text-sm text-[#5D4E4E] opacity-70">Visit the location</p>
                   </button>
                   <button
                     onClick={() => setResponseMode('user_going')}
-                    className={`p-3 border-2 rounded-lg text-center transition-colors ${
+                    className={`p-4 border-2 rounded-xl text-center transition-all ${
                       responseMode === 'user_going'
-                        ? 'border-rose-500 bg-rose-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-[#FD7979] bg-[#FFCDC9] shadow-[0_3px_0_#FDACAC]'
+                        : 'border-[#FFCDC9] hover:border-[#FDACAC] bg-white'
                     }`}
                   >
-                    <p className="font-medium">Come to clinic</p>
-                    <p className="text-sm text-gray-500">Bring the animal</p>
+                    <div className={`w-10 h-10 mx-auto mb-2 rounded-full flex items-center justify-center ${
+                      responseMode === 'user_going' ? 'bg-[#FD7979]' : 'bg-[#FEEAC9]'
+                    }`}>
+                      <FiHome className={`h-5 w-5 ${responseMode === 'user_going' ? 'text-white' : 'text-[#FDACAC]'}`} />
+                    </div>
+                    <p className="font-bold text-[#5D4E4E]">Come to clinic</p>
+                    <p className="text-sm text-[#5D4E4E] opacity-70">Bring the animal</p>
                   </button>
                 </div>
               </div>
@@ -249,7 +270,7 @@ export const DistressList = () => {
                 >
                   Cancel
                 </Button>
-                <Button onClick={handleRespond} isLoading={isResponding}>
+                <Button onClick={handleRespond} isLoading={isResponding} size="lg">
                   Send Response
                 </Button>
               </div>

@@ -25,7 +25,7 @@ export const Login = () => {
 
     try {
       const response = await authService.googleAuth({
-        idToken: credentialResponse.credential, // ✅ JWT ID TOKEN
+        idToken: credentialResponse.credential,
       });
 
       if (response.registered && response.token && response.user) {
@@ -48,25 +48,33 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-rose-50 to-white px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#FEEAC9] px-4">
       <div className="w-full max-w-md">
+        {/* Logo Section */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="text-5xl">🐾</span>
+          <div className="w-24 h-24 mx-auto mb-4 bg-[#FD7979] rounded-full flex items-center justify-center shadow-[0_6px_0_#E05A5A]">
+            <svg className="w-14 h-14 text-white" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="7" cy="8" r="2"/>
+              <circle cx="17" cy="8" r="2"/>
+              <circle cx="5" cy="14" r="1.5"/>
+              <circle cx="19" cy="14" r="1.5"/>
+              <ellipse cx="12" cy="15" rx="4" ry="3"/>
+            </svg>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Cookie</h1>
-          <p className="text-gray-600 mt-2 flex items-center justify-center gap-1">
-            Every life deserves a life <FiHeart className="text-rose-500" />
+          <h1 className="text-4xl font-bold text-[#5D4E4E]">Cookie</h1>
+          <p className="text-[#5D4E4E] mt-2 flex items-center justify-center gap-2 text-lg">
+            Every life deserves a life <FiHeart className="text-[#FD7979]" />
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-xl font-semibold text-gray-900 text-center mb-6">
+        {/* Login Card */}
+        <div className="bg-white rounded-2xl border-2 border-[#FFCDC9] shadow-[0_8px_0_#FDACAC] p-8">
+          <h2 className="text-xl font-bold text-[#5D4E4E] text-center mb-6">
             Welcome
           </h2>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+            <div className="mb-4 p-4 bg-red-50 text-[#E05A5A] rounded-xl border-2 border-red-200 text-sm font-medium">
               {error}
             </div>
           )}
@@ -84,18 +92,19 @@ export const Login = () => {
           </div>
 
           {isLoading && (
-            <p className="mt-4 text-center text-sm text-gray-500">
-              Signing you in…
+            <p className="mt-4 text-center text-sm text-[#5D4E4E] opacity-70">
+              Signing you in...
             </p>
           )}
 
-          <p className="mt-6 text-center text-sm text-gray-500">
+          <p className="mt-6 text-center text-sm text-[#5D4E4E] opacity-70">
             By continuing, you agree to our Terms of Service and Privacy Policy
           </p>
         </div>
 
+        {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
+          <p className="text-[#5D4E4E] opacity-80">
             Animal emergency? Help is just a tap away.
           </p>
         </div>

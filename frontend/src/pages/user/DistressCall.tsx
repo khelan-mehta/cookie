@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiArrowLeft, FiArrowRight, FiMapPin } from 'react-icons/fi';
+import { FiArrowLeft, FiArrowRight, FiMapPin, FiCamera, FiFileText, FiCheck } from 'react-icons/fi';
 import { Layout } from '../../components/layout/Layout';
 import { Card, CardBody } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
@@ -69,7 +69,6 @@ export const DistressCall = () => {
     setIsAnalyzing(true);
 
     try {
-      // Run AI analysis and distress creation in parallel
       const [distressResult] = await Promise.all([
         distressService.createDistress({
           imageUrl,
@@ -78,13 +77,11 @@ export const DistressCall = () => {
             coordinates,
           },
         }),
-        // AI analysis runs in parallel but doesn't block
         aiService.analyzeDistress(imageUrl, description).then((result) => {
           setLocalAIAnalysis(result.analysis);
           setAIAnalysis(result.analysis);
           setIsAnalyzing(false);
 
-          // Update the distress with AI analysis
           if (distressResult?.distress?.id) {
             distressService.updateAIAnalysis(
               distressResult.distress.id,
@@ -99,7 +96,6 @@ export const DistressCall = () => {
 
       toast.success('Emergency reported! Help is on the way.');
 
-      // Fetch and set the full distress data
       const fullDistress = await distressService.getDistress(distressResult.distress.id);
       setActiveDistress(fullDistress.distress);
 
@@ -112,46 +108,74 @@ export const DistressCall = () => {
     }
   };
 
+  const steps = [
+    { key: 'image', icon: FiCamera, label: 'Photo' },
+    { key: 'description', icon: FiFileText, label: 'Details' },
+    { key: 'submit', icon: FiCheck, label: 'Review' },
+  ];
+
+  const currentStepIndex = steps.findIndex(s => s.key === step);
+
   return (
     <Layout>
       <div className="max-w-2xl mx-auto">
-        {/* Progress Indicator */}
+        {/* Header with Back Button */}
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => navigate(ROUTES.DASHBOARD)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            className="flex items-center gap-2 text-[#5D4E4E] hover:text-[#FD7979] transition-colors font-medium"
           >
             <FiArrowLeft className="h-5 w-5" />
             Back
           </button>
-          <div className="flex items-center gap-2">
-            {['image', 'description', 'submit'].map((s, i) => (
-              <div
-                key={s}
-                className={`w-3 h-3 rounded-full ${
-                  ['image', 'description', 'submit'].indexOf(step) >= i
-                    ? 'bg-rose-500'
-                    : 'bg-gray-200'
-                }`}
-              />
-            ))}
-          </div>
+          <h1 className="text-xl font-bold text-[#5D4E4E]">Report Emergency</h1>
+          <div className="w-16"></div>
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">
-          Report Emergency
-        </h1>
+        {/* Progress Steps */}
+        <div className="flex items-center justify-center gap-3 mb-8">
+          {steps.map((s, i) => {
+            const Icon = s.icon;
+            const isCompleted = i < currentStepIndex;
+            const isCurrent = i === currentStepIndex;
+            return (
+              <div key={s.key} className="flex items-center">
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                      isCompleted
+                        ? 'bg-[#10B981] border-2 border-[#059669] shadow-[0_3px_0_#059669]'
+                        : isCurrent
+                        ? 'bg-[#FD7979] border-2 border-[#E05A5A] shadow-[0_3px_0_#E05A5A]'
+                        : 'bg-white border-2 border-[#FFCDC9]'
+                    }`}
+                  >
+                    <Icon className={`h-5 w-5 ${isCompleted || isCurrent ? 'text-white' : 'text-[#FDACAC]'}`} />
+                  </div>
+                  <span className={`text-xs mt-2 font-medium ${isCurrent ? 'text-[#FD7979]' : 'text-[#5D4E4E] opacity-70'}`}>
+                    {s.label}
+                  </span>
+                </div>
+                {i < steps.length - 1 && (
+                  <div className={`w-12 h-1 mx-2 rounded-full ${i < currentStepIndex ? 'bg-[#10B981]' : 'bg-[#FFCDC9]'}`} />
+                )}
+              </div>
+            );
+          })}
+        </div>
 
         {/* Location Status */}
         <Card className="mb-6">
           <CardBody className="flex items-center gap-3">
-            <FiMapPin className={`h-5 w-5 ${coordinates ? 'text-green-500' : 'text-gray-400'}`} />
+            <div className={`p-2.5 rounded-full ${coordinates ? 'bg-[#D1FAE5]' : 'bg-[#FEEAC9]'}`}>
+              <FiMapPin className={`h-5 w-5 ${coordinates ? 'text-[#10B981]' : 'text-[#FDACAC]'}`} />
+            </div>
             {locationLoading ? (
-              <span className="text-gray-500">Getting your location...</span>
+              <span className="text-[#5D4E4E] opacity-70">Getting your location...</span>
             ) : locationError ? (
-              <span className="text-red-500 text-sm">{locationError}</span>
+              <span className="text-[#E05A5A] text-sm font-medium">{locationError}</span>
             ) : (
-              <span className="text-green-600">Location acquired</span>
+              <span className="text-[#10B981] font-medium">Location acquired</span>
             )}
           </CardBody>
         </Card>
@@ -160,9 +184,12 @@ export const DistressCall = () => {
         {step === 'image' && (
           <Card>
             <CardBody>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Step 1: Add a Photo (Optional)
+              <h2 className="text-lg font-bold text-[#5D4E4E] mb-4">
+                Add a Photo (Optional)
               </h2>
+              <p className="text-[#5D4E4E] opacity-70 mb-4 text-sm">
+                A photo helps vets assess the situation before arriving
+              </p>
               <ImageUpload
                 onImageUploaded={handleImageUploaded}
                 currentImage={imageUrl}
@@ -182,8 +209,8 @@ export const DistressCall = () => {
         {step === 'description' && (
           <Card>
             <CardBody>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Step 2: Describe the Situation
+              <h2 className="text-lg font-bold text-[#5D4E4E] mb-4">
+                Describe the Situation
               </h2>
               <TextArea
                 placeholder="Describe what happened and the animal's condition. Include details like:
@@ -215,24 +242,26 @@ export const DistressCall = () => {
           <div className="space-y-4">
             <Card>
               <CardBody>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  Step 3: Review & Submit
+                <h2 className="text-lg font-bold text-[#5D4E4E] mb-4">
+                  Review & Submit
                 </h2>
 
                 {imageUrl && (
                   <div className="mb-4">
-                    <p className="text-sm text-gray-500 mb-2">Photo</p>
+                    <p className="text-sm text-[#5D4E4E] font-medium mb-2">Photo</p>
                     <img
                       src={imageUrl}
                       alt="Emergency"
-                      className="w-full h-32 object-cover rounded-lg"
+                      className="w-full h-32 object-cover rounded-xl border-2 border-[#FFCDC9]"
                     />
                   </div>
                 )}
 
                 <div className="mb-4">
-                  <p className="text-sm text-gray-500 mb-2">Description</p>
-                  <p className="text-gray-900">{description}</p>
+                  <p className="text-sm text-[#5D4E4E] font-medium mb-2">Description</p>
+                  <div className="p-4 bg-[#FFF9F0] rounded-xl border-2 border-[#FEEAC9]">
+                    <p className="text-[#5D4E4E]">{description}</p>
+                  </div>
                 </div>
 
                 <div className="mt-6 flex justify-between">
@@ -244,6 +273,7 @@ export const DistressCall = () => {
                     onClick={handleSubmit}
                     isLoading={isSubmitting}
                     disabled={!coordinates}
+                    size="lg"
                   >
                     Submit Emergency
                   </Button>
@@ -251,7 +281,6 @@ export const DistressCall = () => {
               </CardBody>
             </Card>
 
-            {/* AI Analysis (if already received) */}
             {(isAnalyzing || aiAnalysis) && (
               <AIGuidancePanel
                 analysis={aiAnalysis}
@@ -264,14 +293,14 @@ export const DistressCall = () => {
 
         {/* Submitting Overlay */}
         {isSubmitting && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-[#5D4E4E] bg-opacity-50 flex items-center justify-center z-50">
             <Card className="mx-4 max-w-sm">
               <CardBody className="text-center py-8">
                 <Loader size="lg" />
-                <h3 className="font-semibold text-gray-900 mt-4">
+                <h3 className="font-bold text-[#5D4E4E] mt-4">
                   Submitting Emergency
                 </h3>
-                <p className="text-gray-600 mt-2">
+                <p className="text-[#5D4E4E] opacity-70 mt-2">
                   Notifying nearby vets...
                 </p>
               </CardBody>

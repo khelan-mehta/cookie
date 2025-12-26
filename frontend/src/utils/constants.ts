@@ -17,10 +17,20 @@ export const DISTRESS_STATUS = {
 } as const;
 
 export const SEVERITY_COLORS = {
-  low: 'bg-green-100 text-green-800',
-  medium: 'bg-yellow-100 text-yellow-800',
-  high: 'bg-orange-100 text-orange-800',
-  critical: 'bg-red-100 text-red-800',
+  low: 'bg-[#D1FAE5] text-[#065F46] border-2 border-[#A7F3D0]',
+  medium: 'bg-[#FEEAC9] text-[#5D4E4E] border-2 border-[#FFCDC9]',
+  high: 'bg-[#FFCDC9] text-[#5D4E4E] border-2 border-[#FDACAC]',
+  critical: 'bg-[#FD7979] text-white border-2 border-[#E05A5A]',
+} as const;
+
+export const COOKIE_COLORS = {
+  cream: '#FEEAC9',
+  salmon: '#FFCDC9',
+  pink: '#FDACAC',
+  coral: '#FD7979',
+  dark: '#5D4E4E',
+  text: '#4A3F3F',
+  light: '#FFF9F0',
 } as const;
 
 export const ROUTES = {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiPlus, FiEdit, FiTrash2, FiToggleLeft, FiToggleRight } from 'react-icons/fi';
+import { FiPlus, FiEdit, FiTrash2, FiToggleLeft, FiToggleRight, FiPackage } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { Layout } from '../../components/layout/Layout';
 import { Card, CardBody } from '../../components/common/Card';
@@ -165,7 +165,15 @@ export const VetStore = () => {
     <Layout>
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">My Store</h1>
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-[#FD7979] rounded-full flex items-center justify-center shadow-[0_4px_0_#E05A5A]">
+              <FiPackage className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-[#5D4E4E]">My Store</h1>
+              <p className="text-[#5D4E4E] opacity-70 text-sm">Manage your products</p>
+            </div>
+          </div>
           <Button onClick={() => handleOpenModal()}>
             <FiPlus className="mr-2 h-4 w-4" />
             Add Product
@@ -179,7 +187,10 @@ export const VetStore = () => {
         ) : products.length === 0 ? (
           <Card>
             <CardBody className="text-center py-12">
-              <p className="text-gray-500 mb-4">No products yet</p>
+              <div className="w-20 h-20 mx-auto mb-4 bg-[#FEEAC9] rounded-full flex items-center justify-center border-2 border-[#FFCDC9]">
+                <FiPackage className="h-10 w-10 text-[#FDACAC]" />
+              </div>
+              <p className="text-[#5D4E4E] font-medium mb-4">No products yet</p>
               <Button onClick={() => handleOpenModal()}>
                 <FiPlus className="mr-2 h-4 w-4" />
                 Add Your First Product
@@ -192,26 +203,30 @@ export const VetStore = () => {
               <Card key={product._id}>
                 <CardBody>
                   <div className="flex items-center gap-4">
-                    {product.imageUrl && (
+                    {product.imageUrl ? (
                       <img
                         src={product.imageUrl}
                         alt={product.name}
-                        className="w-16 h-16 object-cover rounded-lg"
+                        className="w-16 h-16 object-cover rounded-xl border-2 border-[#FFCDC9]"
                       />
+                    ) : (
+                      <div className="w-16 h-16 bg-[#FEEAC9] rounded-xl flex items-center justify-center border-2 border-[#FFCDC9]">
+                        <FiPackage className="h-8 w-8 text-[#FDACAC]" />
+                      </div>
                     )}
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900">{product.name}</h3>
-                      <p className="text-rose-600 font-medium">
+                      <h3 className="font-bold text-[#5D4E4E]">{product.name}</h3>
+                      <p className="text-[#FD7979] font-bold">
                         {formatPrice(product.price)}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleToggleAvailability(product)}
-                        className={`p-2 rounded-lg ${
+                        className={`p-2.5 rounded-full transition-all ${
                           product.isAvailable
-                            ? 'text-green-600 bg-green-50'
-                            : 'text-gray-400 bg-gray-50'
+                            ? 'text-[#10B981] bg-[#D1FAE5] border-2 border-[#A7F3D0]'
+                            : 'text-[#FDACAC] bg-[#FEEAC9] border-2 border-[#FFCDC9]'
                         }`}
                       >
                         {product.isAvailable ? (
@@ -222,13 +237,13 @@ export const VetStore = () => {
                       </button>
                       <button
                         onClick={() => handleOpenModal(product)}
-                        className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                        className="p-2.5 text-[#5D4E4E] hover:bg-[#FEEAC9] rounded-full border-2 border-[#FFCDC9] transition-colors"
                       >
                         <FiEdit className="h-5 w-5" />
                       </button>
                       <button
                         onClick={() => setDeleteProduct(product)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                        className="p-2.5 text-[#E05A5A] hover:bg-red-50 rounded-full border-2 border-red-200 transition-colors"
                       >
                         <FiTrash2 className="h-5 w-5" />
                       </button>
@@ -268,7 +283,7 @@ export const VetStore = () => {
             />
 
             <Input
-              label="Price (₹)"
+              label="Price (Rs)"
               type="number"
               value={formData.price}
               onChange={(e) =>
@@ -290,21 +305,21 @@ export const VetStore = () => {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-[#5D4E4E] mb-2">
                 Product Image
               </label>
               {imagePreview && (
                 <img
                   src={imagePreview}
                   alt="Preview"
-                  className="w-full h-32 object-cover rounded-lg mb-2"
+                  className="w-full h-32 object-cover rounded-xl mb-3 border-2 border-[#FFCDC9]"
                 />
               )}
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleImageSelect}
-                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100"
+                className="w-full text-sm text-[#5D4E4E] file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#FFCDC9] file:text-[#5D4E4E] hover:file:bg-[#FDACAC] file:transition-colors file:cursor-pointer"
               />
             </div>
 
