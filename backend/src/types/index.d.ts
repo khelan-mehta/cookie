@@ -51,6 +51,16 @@ export interface IDistress {
   selectedVetId?: Types.ObjectId;
   responseMode?: 'vet_coming' | 'user_going';
   resolvedAt?: Date;
+  // Real-time location tracking (for HTTP polling)
+  userCurrentLocation?: {
+    coordinates: [number, number];
+    updatedAt: Date;
+  };
+  vetCurrentLocation?: {
+    coordinates: [number, number];
+    updatedAt: Date;
+  };
+  lastPolledAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }

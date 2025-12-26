@@ -11,7 +11,7 @@ import { AIGuidancePanel } from "../../components/distress/AIGuidancePanel";
 import { VetResponseList } from "../../components/distress/VetResponseCard";
 import { ConfirmModal } from "../../components/common/Modal";
 import { useDistress } from "../../context/DistressContext";
-import { useSocket } from "../../hooks/useSocket";
+import { usePolling } from "../../hooks/usePolling";
 import { distressService, type Distress } from "../../services/distress";
 import { ROUTES, DISTRESS_STATUS } from "../../utils/constants";
 
@@ -49,16 +49,18 @@ export const Tracking = () => {
     []
   );
 
-  useSocket({
+  // Use HTTP polling instead of WebSocket for real-time updates
+  usePolling({
     distressId: activeDistress?._id,
+    pollingInterval: 3000, // Poll every 3 seconds
     onDistressUpdated: handleDistressUpdated,
-    onVetResponse: handleDistressUpdated,
     onDistressResolved: () => {
       toast.success("Emergency resolved!");
       clearDistress();
       navigate(ROUTES.DASHBOARD);
     },
     onLocationUpdate: handleLocationUpdate,
+    enabled: !!activeDistress?._id,
   });
 
   useEffect(() => {

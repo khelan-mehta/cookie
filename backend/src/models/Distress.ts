@@ -90,6 +90,26 @@ const distressSchema = new Schema<DistressDocument>(
     resolvedAt: {
       type: Date,
     },
+    // Real-time location tracking (for HTTP polling)
+    userCurrentLocation: {
+      coordinates: {
+        type: [Number],
+      },
+      updatedAt: {
+        type: Date,
+      },
+    },
+    vetCurrentLocation: {
+      coordinates: {
+        type: [Number],
+      },
+      updatedAt: {
+        type: Date,
+      },
+    },
+    lastPolledAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

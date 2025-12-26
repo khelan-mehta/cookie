@@ -7,7 +7,7 @@ import { Button } from '../../components/common/Button';
 import { Loader } from '../../components/common/Loader';
 import { Modal } from '../../components/common/Modal';
 import { TextArea } from '../../components/common/Input';
-import { useSocket } from '../../hooks/useSocket';
+import { usePolling } from '../../hooks/usePolling';
 import { distressService, type Distress } from '../../services/distress';
 import { formatDistance, formatDateTime } from '../../utils/validators';
 import { SEVERITY_COLORS } from '../../utils/constants';
@@ -35,12 +35,16 @@ export const DistressList = () => {
     loadDistresses();
   }, [loadDistresses]);
 
-  useSocket({
-    onNewDistress: () => {
-      loadDistresses();
-      toast('New emergency nearby!', { icon: '🚨' });
+  // Use HTTP polling instead of WebSocket for real-time updates
+  usePolling({
+    pollingInterval: 5000, // Poll every 5 seconds for nearby distresses
+    onNewDistress: (data) => {
+      if (data.distresses && data.distresses.length > 0) {
+        loadDistresses();
+        toast('New emergency nearby!', { icon: '🚨' });
+      }
     },
-    onDistressUpdated: loadDistresses,
+    enabled: true,
   });
 
   const handleRespond = async () => {
