@@ -12,7 +12,7 @@ import { Loader } from '../../components/common/Loader';
 import { useLocation } from '../../hooks/useLocation';
 import { useDistress } from '../../context/DistressContext';
 import { distressService } from '../../services/distress';
-import { aiService, AIAnalysisResult } from '../../services/ai';
+import { aiService, type AIAnalysisResult } from '../../services/ai';
 import { ROUTES } from '../../utils/constants';
 import { isValidDescription } from '../../utils/validators';
 

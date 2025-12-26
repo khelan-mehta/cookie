@@ -8,7 +8,7 @@ import { Input } from '../../components/common/Input';
 import { Loader } from '../../components/common/Loader';
 import { Modal } from '../../components/common/Modal';
 import { useAuth } from '../../context/AuthContext';
-import { userService, DistressHistory } from '../../services/user';
+import { userService, type DistressHistory } from '../../services/user';
 import { formatDateTime } from '../../utils/validators';
 import { isValidPhone } from '../../utils/validators';
 

@@ -7,7 +7,7 @@ import { Button } from '../../components/common/Button';
 import { Input, TextArea } from '../../components/common/Input';
 import { Loader } from '../../components/common/Loader';
 import { Modal, ConfirmModal } from '../../components/common/Modal';
-import { storeService, Product, CreateProductData } from '../../services/store';
+import { storeService, type Product, type CreateProductData } from '../../services/store';
 import { uploadService } from '../../services/upload';
 
 export const VetStore = () => {

@@ -8,7 +8,7 @@ import { Loader } from '../../components/common/Loader';
 import { Modal } from '../../components/common/Modal';
 import { TextArea } from '../../components/common/Input';
 import { useSocket } from '../../hooks/useSocket';
-import { distressService, Distress } from '../../services/distress';
+import { distressService, type Distress } from '../../services/distress';
 import { formatDistance, formatDateTime } from '../../utils/validators';
 import { SEVERITY_COLORS } from '../../utils/constants';
 

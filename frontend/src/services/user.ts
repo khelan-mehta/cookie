@@ -1,6 +1,6 @@
 import api from './api';
-import { User, VetProfile } from './auth';
-import { Distress } from './distress';
+import type { User, VetProfile } from './auth';
+import type { Distress } from './distress';
 
 export interface UpdateProfileData {
   name?: string;

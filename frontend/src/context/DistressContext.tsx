@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { distressService, Distress, AIAnalysis } from '../services/distress';
+import { createContext, useContext, useState, useEffect, type ReactNode, useCallback } from 'react';
+import { distressService, type Distress, type AIAnalysis } from '../services/distress';
 import { useAuth } from './AuthContext';
 
 interface DistressContextType {

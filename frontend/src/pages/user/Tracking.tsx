@@ -1,48 +1,60 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { FiCheck, FiX, FiPhone } from 'react-icons/fi';
-import { Layout } from '../../components/layout/Layout';
-import { Card, CardBody } from '../../components/common/Card';
-import { Button } from '../../components/common/Button';
-import { Loader } from '../../components/common/Loader';
-import { LiveMap } from '../../components/map/LiveMap';
-import { AIGuidancePanel } from '../../components/distress/AIGuidancePanel';
-import { VetResponseList } from '../../components/distress/VetResponseCard';
-import { ConfirmModal } from '../../components/common/Modal';
-import { useDistress } from '../../context/DistressContext';
-import { useSocket } from '../../hooks/useSocket';
-import { distressService, Distress } from '../../services/distress';
-import { ROUTES, DISTRESS_STATUS } from '../../utils/constants';
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { FiCheck, FiX, FiPhone } from "react-icons/fi";
+import { Layout } from "../../components/layout/Layout";
+import { Card, CardBody } from "../../components/common/Card";
+import { Button } from "../../components/common/Button";
+import { Loader } from "../../components/common/Loader";
+import { LiveMap } from "../../components/map/LiveMap";
+import { AIGuidancePanel } from "../../components/distress/AIGuidancePanel";
+import { VetResponseList } from "../../components/distress/VetResponseCard";
+import { ConfirmModal } from "../../components/common/Modal";
+import { useDistress } from "../../context/DistressContext";
+import { useSocket } from "../../hooks/useSocket";
+import { distressService, type Distress } from "../../services/distress";
+import { ROUTES, DISTRESS_STATUS } from "../../utils/constants";
 
 export const Tracking = () => {
   const navigate = useNavigate();
-  const { activeDistress, aiAnalysis, setActiveDistress, clearDistress, refreshActiveDistress } = useDistress();
+  const {
+    activeDistress,
+    aiAnalysis,
+    setActiveDistress,
+    clearDistress,
+    refreshActiveDistress,
+  } = useDistress();
   const [isSelectingVet, setIsSelectingVet] = useState(false);
   const [selectingVetId, setSelectingVetId] = useState<string | null>(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showResolveModal, setShowResolveModal] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const [isResolving, setIsResolving] = useState(false);
-  const [vetLocation, setVetLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [vetLocation, setVetLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   const handleDistressUpdated = useCallback(() => {
     refreshActiveDistress();
   }, [refreshActiveDistress]);
 
-  const handleLocationUpdate = useCallback((data: { coordinates: [number, number] }) => {
-    setVetLocation({
-      lng: data.coordinates[0],
-      lat: data.coordinates[1],
-    });
-  }, []);
+  const handleLocationUpdate = useCallback(
+    (data: { coordinates: [number, number] }) => {
+      setVetLocation({
+        lng: data.coordinates[0],
+        lat: data.coordinates[1],
+      });
+    },
+    []
+  );
 
   useSocket({
     distressId: activeDistress?._id,
     onDistressUpdated: handleDistressUpdated,
     onVetResponse: handleDistressUpdated,
     onDistressResolved: () => {
-      toast.success('Emergency resolved!');
+      toast.success("Emergency resolved!");
       clearDistress();
       navigate(ROUTES.DASHBOARD);
     },
@@ -62,11 +74,15 @@ export const Tracking = () => {
     setSelectingVetId(vetId);
 
     try {
-      const result = await distressService.selectVet(activeDistress._id, vetId, mode);
+      const result = await distressService.selectVet(
+        activeDistress._id,
+        vetId,
+        mode
+      );
       setActiveDistress(result.distress as Distress);
-      toast.success('Vet selected! Help is on the way.');
+      toast.success("Vet selected! Help is on the way.");
     } catch (err) {
-      toast.error('Failed to select vet. Please try again.');
+      toast.error("Failed to select vet. Please try again.");
       console.error(err);
     } finally {
       setIsSelectingVet(false);
@@ -81,11 +97,11 @@ export const Tracking = () => {
 
     try {
       await distressService.cancelDistress(activeDistress._id);
-      toast.success('Emergency cancelled');
+      toast.success("Emergency cancelled");
       clearDistress();
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
-      toast.error('Failed to cancel. Please try again.');
+      toast.error("Failed to cancel. Please try again.");
       console.error(err);
     } finally {
       setIsCancelling(false);
@@ -100,11 +116,11 @@ export const Tracking = () => {
 
     try {
       await distressService.resolveDistress(activeDistress._id);
-      toast.success('Emergency resolved! Thank you.');
+      toast.success("Emergency resolved! Thank you.");
       clearDistress();
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
-      toast.error('Failed to resolve. Please try again.');
+      toast.error("Failed to resolve. Please try again.");
       console.error(err);
     } finally {
       setIsResolving(false);
@@ -123,10 +139,14 @@ export const Tracking = () => {
   }
 
   const userLocation = activeDistress.location?.coordinates
-    ? { lng: activeDistress.location.coordinates[0], lat: activeDistress.location.coordinates[1] }
+    ? {
+        lng: activeDistress.location.coordinates[0],
+        lat: activeDistress.location.coordinates[1],
+      }
     : undefined;
 
-  const selectedVetLocation = activeDistress.selectedVetId?.location?.coordinates
+  const selectedVetLocation = activeDistress.selectedVetId?.location
+    ?.coordinates
     ? {
         lng: activeDistress.selectedVetId.location.coordinates[0],
         lat: activeDistress.selectedVetId.location.coordinates[1],
@@ -139,25 +159,35 @@ export const Tracking = () => {
     <Layout>
       <div className="max-w-4xl mx-auto">
         {/* Status Banner */}
-        <Card className={`mb-6 ${isInProgress ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
+        <Card
+          className={`mb-6 ${
+            isInProgress
+              ? "bg-green-50 border-green-200"
+              : "bg-amber-50 border-amber-200"
+          }`}
+        >
           <CardBody>
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="font-semibold text-lg text-gray-900">
-                  {isInProgress ? 'Help is Coming!' : 'Waiting for Responses'}
+                  {isInProgress ? "Help is Coming!" : "Waiting for Responses"}
                 </h2>
                 <p className="text-gray-600 text-sm">
                   {isInProgress
-                    ? activeDistress.responseMode === 'vet_coming'
-                      ? 'A vet is on their way to you'
-                      : 'Head to the clinic for assistance'
-                    : 'Nearby vets have been notified'}
+                    ? activeDistress.responseMode === "vet_coming"
+                      ? "A vet is on their way to you"
+                      : "Head to the clinic for assistance"
+                    : "Nearby vets have been notified"}
                 </p>
               </div>
-              <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                isInProgress ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
-              }`}>
-                {activeDistress.status.replace('_', ' ').toUpperCase()}
+              <div
+                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  isInProgress
+                    ? "bg-green-100 text-green-800"
+                    : "bg-amber-100 text-amber-800"
+                }`}
+              >
+                {activeDistress.status.replace("_", " ").toUpperCase()}
               </div>
             </div>
           </CardBody>
@@ -193,9 +223,13 @@ export const Tracking = () => {
               <Card>
                 <CardBody>
                   <VetResponseList
-                    responses={activeDistress.responses.map((r) => ({
-                      vetId: typeof r.vetId === 'string' ? r.vetId : r.vetId._id,
-                      clinicName: typeof r.vetId === 'object' ? r.vetId.clinicName : undefined,
+                    responses={activeDistress.responses.map((r: any) => ({
+                      vetId:
+                        typeof r.vetId === "string" ? r.vetId : r.vetId._id,
+                      clinicName:
+                        typeof r.vetId === "object"
+                          ? r.vetId.clinicName
+                          : undefined,
                       mode: r.mode,
                       estimatedTime: r.estimatedTime,
                       distance: r.distance,
@@ -212,11 +246,14 @@ export const Tracking = () => {
             {activeDistress.selectedVetId && (
               <Card>
                 <CardBody>
-                  <h3 className="font-semibold text-gray-900 mb-3">Your Helper</h3>
+                  <h3 className="font-semibold text-gray-900 mb-3">
+                    Your Helper
+                  </h3>
                   <div className="flex items-center gap-4">
                     <div className="flex-1">
                       <p className="font-medium">
-                        {activeDistress.selectedVetId.clinicName || 'Veterinary Clinic'}
+                        {activeDistress.selectedVetId.clinicName ||
+                          "Veterinary Clinic"}
                       </p>
                       {activeDistress.selectedVetId.clinicAddress && (
                         <p className="text-sm text-gray-500">

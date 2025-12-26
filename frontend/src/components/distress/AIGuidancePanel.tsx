@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FiAlertCircle, FiChevronDown, FiChevronUp, FiInfo } from 'react-icons/fi';
-import { AIAnalysis } from '../../services/distress';
+import type { AIAnalysis } from '../../services/distress';
 import { SEVERITY_COLORS } from '../../utils/constants';
 
 interface AIGuidancePanelProps {

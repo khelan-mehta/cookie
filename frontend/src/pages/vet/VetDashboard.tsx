@@ -7,7 +7,7 @@ import { Card, CardBody } from '../../components/common/Card';
 import { Loader } from '../../components/common/Loader';
 import { useAuth } from '../../context/AuthContext';
 import { userService } from '../../services/user';
-import { distressService, Distress } from '../../services/distress';
+import { distressService, type Distress } from '../../services/distress';
 import { ROUTES } from '../../utils/constants';
 import { formatDistance, formatDateTime } from '../../utils/validators';
 

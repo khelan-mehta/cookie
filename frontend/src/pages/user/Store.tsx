@@ -6,7 +6,7 @@ import { Input } from '../../components/common/Input';
 import { Loader } from '../../components/common/Loader';
 import { Modal } from '../../components/common/Modal';
 import { Button } from '../../components/common/Button';
-import { storeService, Product } from '../../services/store';
+import { storeService, type Product } from '../../services/store';
 
 export const Store = () => {
   const [products, setProducts] = useState<Product[]>([]);

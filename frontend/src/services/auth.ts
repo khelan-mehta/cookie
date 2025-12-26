@@ -1,11 +1,11 @@
-import api from './api';
+import api from "./api";
 
 export interface User {
   id: string;
   email: string;
   name: string;
   avatar?: string;
-  role: 'user' | 'vet';
+  role: "user" | "vet";
   phone?: string;
 }
 
@@ -42,46 +42,46 @@ export interface RegisterData {
   name: string;
   avatar?: string;
   phone: string;
-  role: 'user' | 'vet';
+  role: "user" | "vet";
 }
 
 export const authService = {
-  async googleAuth(idToken: string): Promise<GoogleAuthResponse> {
-    const response = await api.post('/auth/google', { idToken });
+  async googleAuth(payload: { idToken: string }): Promise<GoogleAuthResponse> {
+    const response = await api.post("/auth/google", payload);
     return response.data;
   },
 
   async register(data: RegisterData): Promise<{ token: string; user: User }> {
-    const response = await api.post('/auth/register', data);
+    const response = await api.post("/auth/register", data);
     return response.data;
   },
 
   async getMe(): Promise<{ user: User; vetProfile?: VetProfile }> {
-    const response = await api.get('/auth/me');
+    const response = await api.get("/auth/me");
     return response.data;
   },
 
   async logout(): Promise<void> {
-    await api.post('/auth/logout');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    await api.post("/auth/logout");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   },
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return localStorage.getItem("token");
   },
 
   setToken(token: string): void {
-    localStorage.setItem('token', token);
+    localStorage.setItem("token", token);
   },
 
   getStoredUser(): User | null {
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem("user");
     return user ? JSON.parse(user) : null;
   },
 
   setStoredUser(user: User): void {
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(user));
   },
 
   isAuthenticated(): boolean {
