@@ -18,7 +18,7 @@ export const VetDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isTogglingAvailability, setIsTogglingAvailability] = useState(false);
   const [locationStatus, setLocationStatus] = useState<'unknown' | 'updating' | 'updated' | 'error'>('unknown');
-  const locationIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const locationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const updateVetLocation = useCallback(async () => {
     try {

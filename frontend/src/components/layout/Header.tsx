@@ -38,12 +38,12 @@ export const Header = () => {
   return (
     <header className="sticky top-0 z-40">
       {/* Main navbar with cute bubble design */}
-      <div className="bg-white border-b-2 border-[#FFCDC9]">
+      <div className="bg-white  ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo with cute paw design */}
             <Link to={getDashboardRoute()} className="flex items-center gap-3 group">
-              <div className="w-10 h-10 bg-[#FD7979] rounded-full flex items-center justify-center shadow-[0_3px_0_#E05A5A] group-hover:-translate-y-0.5 group-hover:shadow-[0_5px_0_#E05A5A] transition-all">
+              <div className="w-10 h-10 bg-[#FD7979] rounded-full flex items-center justify-center  group-hover:-translate-y-0.5 group-hover:shadow-[0_5px_0_#E05A5A] transition-all">
                 <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6zm4 4h-2v-2h2v2zm0-4h-2V7h2v6z" opacity="0"/>
                   <circle cx="7" cy="8" r="2"/>
@@ -140,11 +140,11 @@ export const Header = () => {
       </div>
 
       {/* Decorative wave bottom */}
-      <div className="relative h-3 bg-white overflow-hidden">
+      <div className="relative h-3 bg-transparent overflow-hidden rotate-180">
         <svg className="absolute bottom-0 w-full h-6" viewBox="0 0 1200 24" preserveAspectRatio="none">
           <path
             d="M0,24 C200,0 400,24 600,12 C800,0 1000,24 1200,12 L1200,24 L0,24 Z"
-            fill="#FFCDC9"
+            fill="white"
           />
         </svg>
       </div>

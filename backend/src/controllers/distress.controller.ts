@@ -114,7 +114,7 @@ export const getDistress = async (
 
     const isOwner = distress.userId._id.toString() === req.user._id.toString();
     const isRespondingVet = distress.responses.some(
-      (r) => r.vetId.toString() === req.user._id.toString()
+      (r) => r.vetId.toString() === req?.user?._id.toString()
     );
 
     if (!isOwner && !isRespondingVet && req.user.role !== 'vet') {
