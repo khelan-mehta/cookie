@@ -26,7 +26,7 @@ export const VetResponseCard = ({
   isSelected = false,
 }: VetResponseCardProps) => {
   return (
-    <Card className={isSelected ? 'ring-2 ring-rose-500' : ''}>
+    <Card className={isSelected ? 'ring-2 ring-[#FD7979] border-[#FD7979]' : ''}>
       <CardBody>
         <div className="flex justify-between items-start mb-3">
           <div>
@@ -34,10 +34,10 @@ export const VetResponseCard = ({
               {response.clinicName || 'Veterinary Clinic'}
             </h3>
             <span
-              className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full mt-1 ${
+              className={`inline-block px-2.5 py-1 text-xs font-medium rounded-lg mt-1.5 ${
                 response.mode === 'vet_coming'
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-blue-100 text-blue-800'
+                  ? 'bg-[#FEEAC9] text-gray-800'
+                  : 'bg-[#FFCDC9] text-gray-800'
               }`}
             >
               {response.mode === 'vet_coming' ? 'Vet Coming to You' : 'Visit Clinic'}
@@ -47,13 +47,13 @@ export const VetResponseCard = ({
 
         <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
           {response.distance !== undefined && (
-            <div className="flex items-center gap-1">
-              <FiMapPin className="h-4 w-4" />
+            <div className="flex items-center gap-1.5 bg-[#FEEAC9]/50 px-2.5 py-1 rounded-lg">
+              <FiMapPin className="h-4 w-4 text-[#FD7979]" />
               <span>{formatDistance(response.distance)}</span>
             </div>
           )}
           {response.estimatedTime !== undefined && (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               <FiClock className="h-4 w-4" />
               <span>{formatDuration(response.estimatedTime)}</span>
             </div>
@@ -61,8 +61,8 @@ export const VetResponseCard = ({
         </div>
 
         {response.message && (
-          <div className="flex items-start gap-2 text-sm text-gray-600 mb-3 p-2 bg-gray-50 rounded-lg">
-            <FiMessageCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+          <div className="flex items-start gap-2 text-sm text-gray-600 mb-3 p-3 bg-[#FEEAC9]/30 rounded-xl">
+            <FiMessageCircle className="h-4 w-4 mt-0.5 flex-shrink-0 text-[#FD7979]" />
             <p>{response.message}</p>
           </div>
         )}
@@ -93,9 +93,12 @@ export const VetResponseList = ({
 }) => {
   if (responses.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        <p>Waiting for vet responses...</p>
-        <p className="text-sm mt-1">Nearby vets have been notified</p>
+      <div className="text-center py-8">
+        <div className="w-12 h-12 mx-auto mb-3 bg-[#FEEAC9] rounded-xl flex items-center justify-center animate-pulse-soft">
+          <FiClock className="h-6 w-6 text-[#FD7979]" />
+        </div>
+        <p className="text-gray-600 font-medium">Waiting for vet responses...</p>
+        <p className="text-sm text-gray-500 mt-1">Nearby vets have been notified</p>
       </div>
     );
   }

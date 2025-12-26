@@ -55,10 +55,12 @@ export const RoleSelect = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-rose-50 to-white px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFFBF5] px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <span className="text-4xl">🐾</span>
+          <div className="w-16 h-16 bg-[#FD7979] rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+            <span className="text-white font-bold text-3xl">C</span>
+          </div>
           <h1 className="text-2xl font-bold text-gray-900 mt-4">
             Complete Your Profile
           </h1>
@@ -67,10 +69,10 @@ export const RoleSelect = () => {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+        <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#FEEAC9]">
           <form onSubmit={handleSubmit}>
             {error && (
-              <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+              <div className="mb-4 p-3 bg-[#FD7979]/10 text-[#FD7979] rounded-xl text-sm border border-[#FDACAC]">
                 {error}
               </div>
             )}
@@ -83,14 +85,14 @@ export const RoleSelect = () => {
                 <button
                   type="button"
                   onClick={() => setRole('user')}
-                  className={`p-4 border-2 rounded-xl flex flex-col items-center gap-2 transition-colors ${
+                  className={`p-4 border-2 rounded-xl flex flex-col items-center gap-2 transition-all ${
                     role === 'user'
-                      ? 'border-rose-500 bg-rose-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-[#FD7979] bg-[#FFCDC9]'
+                      : 'border-[#FEEAC9] hover:border-[#FDACAC]'
                   }`}
                 >
-                  <FiUser className={`h-6 w-6 ${role === 'user' ? 'text-rose-500' : 'text-gray-500'}`} />
-                  <span className={`font-medium ${role === 'user' ? 'text-rose-700' : 'text-gray-700'}`}>
+                  <FiUser className={`h-6 w-6 ${role === 'user' ? 'text-[#FD7979]' : 'text-gray-500'}`} />
+                  <span className={`font-medium ${role === 'user' ? 'text-gray-900' : 'text-gray-700'}`}>
                     Pet Parent
                   </span>
                   <span className="text-xs text-gray-500">
@@ -101,14 +103,14 @@ export const RoleSelect = () => {
                 <button
                   type="button"
                   onClick={() => setRole('vet')}
-                  className={`p-4 border-2 rounded-xl flex flex-col items-center gap-2 transition-colors ${
+                  className={`p-4 border-2 rounded-xl flex flex-col items-center gap-2 transition-all ${
                     role === 'vet'
-                      ? 'border-rose-500 bg-rose-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-[#FD7979] bg-[#FFCDC9]'
+                      : 'border-[#FEEAC9] hover:border-[#FDACAC]'
                   }`}
                 >
-                  <FiHeart className={`h-6 w-6 ${role === 'vet' ? 'text-rose-500' : 'text-gray-500'}`} />
-                  <span className={`font-medium ${role === 'vet' ? 'text-rose-700' : 'text-gray-700'}`}>
+                  <FiHeart className={`h-6 w-6 ${role === 'vet' ? 'text-[#FD7979]' : 'text-gray-500'}`} />
+                  <span className={`font-medium ${role === 'vet' ? 'text-gray-900' : 'text-gray-700'}`}>
                     Vet / Helper
                   </span>
                   <span className="text-xs text-gray-500">

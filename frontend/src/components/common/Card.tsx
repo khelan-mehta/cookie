@@ -16,8 +16,8 @@ export const Card = ({
   return (
     <div
       onClick={onClick}
-      className={`bg-white rounded-xl shadow-sm border border-gray-100 ${
-        hoverable ? 'hover:shadow-md transition-shadow cursor-pointer' : ''
+      className={`bg-white rounded-2xl shadow-sm border border-[#FEEAC9] ${
+        hoverable ? 'hover:shadow-md hover:border-[#FDACAC] transition-all cursor-pointer' : ''
       } ${className}`}
     >
       {children}
@@ -32,7 +32,7 @@ export const CardHeader = ({
   children: ReactNode;
   className?: string;
 }) => (
-  <div className={`px-4 py-3 border-b border-gray-100 ${className}`}>
+  <div className={`px-5 py-4 border-b border-[#FEEAC9] ${className}`}>
     {children}
   </div>
 );
@@ -43,7 +43,7 @@ export const CardBody = ({
 }: {
   children: ReactNode;
   className?: string;
-}) => <div className={`p-4 ${className}`}>{children}</div>;
+}) => <div className={`p-5 ${className}`}>{children}</div>;
 
 export const CardFooter = ({
   children,
@@ -52,7 +52,7 @@ export const CardFooter = ({
   children: ReactNode;
   className?: string;
 }) => (
-  <div className={`px-4 py-3 border-t border-gray-100 ${className}`}>
+  <div className={`px-5 py-4 border-t border-[#FEEAC9] bg-[#FEEAC9]/20 rounded-b-2xl ${className}`}>
     {children}
   </div>
 );

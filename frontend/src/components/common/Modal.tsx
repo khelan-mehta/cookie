@@ -56,26 +56,26 @@ export const Modal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-50 overflow-y-auto animate-fadeIn">
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       <div className="flex min-h-full items-center justify-center p-4">
         <div
-          className={`relative bg-white rounded-xl shadow-xl w-full ${sizes[size]} transform transition-all`}
+          className={`relative bg-white rounded-2xl shadow-xl w-full ${sizes[size]} transform transition-all animate-slideUp border border-[#FEEAC9]`}
           onClick={(e) => e.stopPropagation()}
         >
           {(title || showCloseButton) && (
-            <div className="flex items-center justify-between p-4 border-b">
+            <div className="flex items-center justify-between p-5 border-b border-[#FEEAC9]">
               {title && (
                 <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
               )}
               {showCloseButton && (
                 <button
                   onClick={onClose}
-                  className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-full hover:bg-[#FEEAC9] transition-colors"
                 >
                   <FiX className="h-5 w-5 text-gray-500" />
                 </button>
@@ -83,7 +83,7 @@ export const Modal = ({
             </div>
           )}
 
-          <div className="p-4">{children}</div>
+          <div className="p-5">{children}</div>
         </div>
       </div>
     </div>
@@ -119,7 +119,7 @@ export const ConfirmModal = ({
       <div className="flex gap-3 justify-end">
         <button
           onClick={onClose}
-          className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+          className="px-5 py-2.5 text-gray-700 bg-[#FEEAC9] rounded-xl hover:bg-[#FFCDC9] transition-colors font-medium"
           disabled={isLoading}
         >
           {cancelText}
@@ -127,10 +127,10 @@ export const ConfirmModal = ({
         <button
           onClick={onConfirm}
           disabled={isLoading}
-          className={`px-4 py-2 text-white rounded-lg transition-colors ${
+          className={`px-5 py-2.5 text-white rounded-xl transition-colors font-medium ${
             variant === 'danger'
-              ? 'bg-red-600 hover:bg-red-700'
-              : 'bg-rose-500 hover:bg-rose-600'
+              ? 'bg-[#FD7979] hover:bg-red-600'
+              : 'bg-[#FD7979] hover:bg-[#FDACAC]'
           }`}
         >
           {isLoading ? 'Loading...' : confirmText}

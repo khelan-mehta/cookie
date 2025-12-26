@@ -43,16 +43,18 @@ export const Dashboard = () => {
         </div>
 
         {/* Emergency CTA */}
-        <Card className="mb-6 bg-gradient-to-r from-rose-500 to-rose-600 text-white">
+        <Card className="mb-6 bg-[#FD7979] border-[#FD7979] text-white">
           <CardBody className="text-center py-8">
-            <FiAlertCircle className="h-12 w-12 mx-auto mb-4" />
+            <div className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-2xl flex items-center justify-center">
+              <FiAlertCircle className="h-10 w-10" />
+            </div>
             <h2 className="text-xl font-bold mb-2">Animal Emergency?</h2>
-            <p className="mb-4 opacity-90">Get immediate help from nearby vets</p>
+            <p className="mb-5 opacity-90">Get immediate help from nearby vets</p>
             <Button
               onClick={() => navigate(ROUTES.DISTRESS_CALL)}
               variant="secondary"
               size="lg"
-              className="bg-white text-rose-600 hover:bg-gray-100"
+              className="bg-white text-[#FD7979] hover:bg-[#FEEAC9] shadow-md"
             >
               Report Emergency
             </Button>
@@ -61,12 +63,12 @@ export const Dashboard = () => {
 
         {/* Active Distress Banner */}
         {activeDistress && (
-          <Card className="mb-6 border-2 border-amber-400 bg-amber-50">
+          <Card className="mb-6 border-2 border-[#FDACAC] bg-[#FFCDC9]">
             <CardBody>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-amber-100 rounded-full">
-                    <FiClock className="h-5 w-5 text-amber-600" />
+                  <div className="p-2.5 bg-[#FEEAC9] rounded-xl">
+                    <FiClock className="h-5 w-5 text-[#FD7979]" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900">Active Emergency</h3>
@@ -91,7 +93,9 @@ export const Dashboard = () => {
           <Link to={ROUTES.STORE}>
             <Card hoverable className="h-full">
               <CardBody className="text-center py-6">
-                <FiShoppingBag className="h-8 w-8 mx-auto mb-2 text-rose-500" />
+                <div className="w-14 h-14 mx-auto mb-3 bg-[#FEEAC9] rounded-xl flex items-center justify-center">
+                  <FiShoppingBag className="h-7 w-7 text-[#FD7979]" />
+                </div>
                 <h3 className="font-medium text-gray-900">Pet Store</h3>
                 <p className="text-sm text-gray-500 mt-1">
                   Browse medical supplies
@@ -103,7 +107,9 @@ export const Dashboard = () => {
           <Link to={ROUTES.PROFILE}>
             <Card hoverable className="h-full">
               <CardBody className="text-center py-6">
-                <FiUser className="h-8 w-8 mx-auto mb-2 text-rose-500" />
+                <div className="w-14 h-14 mx-auto mb-3 bg-[#FEEAC9] rounded-xl flex items-center justify-center">
+                  <FiUser className="h-7 w-7 text-[#FD7979]" />
+                </div>
                 <h3 className="font-medium text-gray-900">Profile</h3>
                 <p className="text-sm text-gray-500 mt-1">
                   View history & settings
@@ -114,24 +120,24 @@ export const Dashboard = () => {
         </div>
 
         {/* Tips */}
-        <Card className="mt-6">
+        <Card className="mt-6 bg-[#FEEAC9]/30">
           <CardBody>
             <h3 className="font-semibold text-gray-900 mb-3">Tips for Emergencies</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li className="flex items-start gap-2">
-                <span className="text-rose-500">•</span>
+            <ul className="space-y-2.5 text-sm text-gray-600">
+              <li className="flex items-start gap-3">
+                <span className="w-1.5 h-1.5 mt-1.5 rounded-full bg-[#FD7979] flex-shrink-0"></span>
                 Stay calm and assess the situation safely
               </li>
-              <li className="flex items-start gap-2">
-                <span className="text-rose-500">•</span>
+              <li className="flex items-start gap-3">
+                <span className="w-1.5 h-1.5 mt-1.5 rounded-full bg-[#FD7979] flex-shrink-0"></span>
                 Take a clear photo if possible - it helps vets assess
               </li>
-              <li className="flex items-start gap-2">
-                <span className="text-rose-500">•</span>
+              <li className="flex items-start gap-3">
+                <span className="w-1.5 h-1.5 mt-1.5 rounded-full bg-[#FD7979] flex-shrink-0"></span>
                 Don't move the animal unless it's in immediate danger
               </li>
-              <li className="flex items-start gap-2">
-                <span className="text-rose-500">•</span>
+              <li className="flex items-start gap-3">
+                <span className="w-1.5 h-1.5 mt-1.5 rounded-full bg-[#FD7979] flex-shrink-0"></span>
                 Keep the animal warm and comfortable
               </li>
             </ul>

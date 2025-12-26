@@ -73,19 +73,19 @@ export const ImageUpload = ({
         <img
           src={preview}
           alt="Preview"
-          className="w-full h-48 object-cover rounded-lg"
+          className="w-full h-48 object-cover rounded-xl border-2 border-[#FEEAC9]"
         />
         {isUploading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm rounded-xl">
             <Loader color="text-white" />
           </div>
         )}
         {!isUploading && (
           <button
             onClick={handleClear}
-            className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md hover:bg-gray-100"
+            className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-md hover:bg-[#FEEAC9] transition-colors"
           >
-            <FiX className="h-5 w-5 text-gray-600" />
+            <FiX className="h-5 w-5 text-[#FD7979]" />
           </button>
         )}
       </div>
@@ -132,11 +132,11 @@ export const ImageUpload = ({
         </Button>
       </div>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-sm text-[#FD7979]">{error}</p>}
 
-      <div className="flex items-center justify-center h-32 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+      <div className="flex items-center justify-center h-32 border-2 border-dashed border-[#FDACAC] rounded-xl bg-[#FEEAC9]/20">
         <div className="text-center text-gray-500">
-          <FiImage className="mx-auto h-8 w-8 mb-2" />
+          <FiImage className="mx-auto h-8 w-8 mb-2 text-[#FDACAC]" />
           <p className="text-sm">Take a photo or upload an image</p>
           <p className="text-xs">(Optional but helps with assessment)</p>
         </div>

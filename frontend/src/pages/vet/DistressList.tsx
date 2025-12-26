@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiMapPin, FiClock, FiRefreshCw } from 'react-icons/fi';
+import { FiMapPin, FiClock, FiRefreshCw, FiAlertTriangle } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { Layout } from '../../components/layout/Layout';
 import { Card, CardBody } from '../../components/common/Card';
@@ -41,7 +41,12 @@ export const DistressList = () => {
     onNewDistress: (data) => {
       if (data.distresses && data.distresses.length > 0) {
         loadDistresses();
-        toast('New emergency nearby!', { icon: '🚨' });
+        toast('New emergency nearby!', {
+          style: {
+            background: '#FD7979',
+            color: '#fff',
+          },
+        });
       }
     },
     enabled: true,
@@ -92,10 +97,13 @@ export const DistressList = () => {
             <Loader text="Loading emergencies..." />
           </div>
         ) : distresses.length === 0 ? (
-          <Card>
+          <Card className="bg-[#FEEAC9]/30">
             <CardBody className="text-center py-12">
-              <p className="text-gray-500">No active emergencies in your area</p>
-              <p className="text-sm text-gray-400 mt-2">
+              <div className="w-16 h-16 mx-auto mb-4 bg-[#FEEAC9] rounded-2xl flex items-center justify-center">
+                <FiAlertTriangle className="h-8 w-8 text-[#FD7979]" />
+              </div>
+              <p className="text-gray-600 font-medium">No active emergencies in your area</p>
+              <p className="text-sm text-gray-500 mt-2">
                 Make sure your location is set in your profile
               </p>
             </CardBody>
@@ -103,13 +111,13 @@ export const DistressList = () => {
         ) : (
           <div className="space-y-4">
             {distresses.map((distress) => (
-              <Card key={distress._id}>
+              <Card key={distress._id} className="hover:border-[#FDACAC] transition-colors">
                 <CardBody>
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex-1">
                       {distress.aiAnalysis?.severity && (
                         <span
-                          className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full mb-2 ${
+                          className={`inline-block px-2.5 py-1 text-xs font-medium rounded-full mb-2 ${
                             SEVERITY_COLORS[distress.aiAnalysis.severity]
                           }`}
                         >
@@ -122,19 +130,19 @@ export const DistressList = () => {
                       <img
                         src={distress.imageUrl}
                         alt="Emergency"
-                        className="w-20 h-20 object-cover rounded-lg ml-4"
+                        className="w-20 h-20 object-cover rounded-xl ml-4 border-2 border-[#FEEAC9]"
                       />
                     )}
                   </div>
 
                   <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                     {distress.distance !== undefined && (
-                      <div className="flex items-center gap-1">
-                        <FiMapPin className="h-4 w-4" />
+                      <div className="flex items-center gap-1.5 bg-[#FEEAC9]/50 px-2.5 py-1 rounded-lg">
+                        <FiMapPin className="h-4 w-4 text-[#FD7979]" />
                         <span>{formatDistance(distress.distance)}</span>
                       </div>
                     )}
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                       <FiClock className="h-4 w-4" />
                       <span>{formatDateTime(distress.createdAt)}</span>
                     </div>
@@ -166,7 +174,7 @@ export const DistressList = () => {
             <div className="space-y-4">
               <div>
                 <h4 className="font-medium text-gray-900 mb-2">Emergency Details</h4>
-                <p className="text-gray-600 text-sm">{selectedDistress.description}</p>
+                <p className="text-gray-600 text-sm bg-[#FEEAC9]/30 p-3 rounded-xl">{selectedDistress.description}</p>
               </div>
 
               <div>
@@ -174,10 +182,10 @@ export const DistressList = () => {
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => setResponseMode('vet_coming')}
-                    className={`p-3 border-2 rounded-lg text-center transition-colors ${
+                    className={`p-4 border-2 rounded-xl text-center transition-all ${
                       responseMode === 'vet_coming'
-                        ? 'border-rose-500 bg-rose-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-[#FD7979] bg-[#FFCDC9]'
+                        : 'border-[#FEEAC9] hover:border-[#FDACAC]'
                     }`}
                   >
                     <p className="font-medium">I'll come to you</p>
@@ -185,10 +193,10 @@ export const DistressList = () => {
                   </button>
                   <button
                     onClick={() => setResponseMode('user_going')}
-                    className={`p-3 border-2 rounded-lg text-center transition-colors ${
+                    className={`p-4 border-2 rounded-xl text-center transition-all ${
                       responseMode === 'user_going'
-                        ? 'border-rose-500 bg-rose-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-[#FD7979] bg-[#FFCDC9]'
+                        : 'border-[#FEEAC9] hover:border-[#FDACAC]'
                     }`}
                   >
                     <p className="font-medium">Come to clinic</p>

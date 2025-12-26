@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiArrowLeft, FiArrowRight, FiMapPin } from 'react-icons/fi';
+import { FiArrowLeft, FiArrowRight, FiMapPin, FiCheck } from 'react-icons/fi';
 import { Layout } from '../../components/layout/Layout';
 import { Card, CardBody } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
@@ -112,6 +112,8 @@ export const DistressCall = () => {
     }
   };
 
+  const stepIndex = ['image', 'description', 'submit'].indexOf(step);
+
   return (
     <Layout>
       <div className="max-w-2xl mx-auto">
@@ -119,7 +121,7 @@ export const DistressCall = () => {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => navigate(ROUTES.DASHBOARD)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            className="flex items-center gap-2 text-gray-600 hover:text-[#FD7979] transition-colors"
           >
             <FiArrowLeft className="h-5 w-5" />
             Back
@@ -128,10 +130,10 @@ export const DistressCall = () => {
             {['image', 'description', 'submit'].map((s, i) => (
               <div
                 key={s}
-                className={`w-3 h-3 rounded-full ${
-                  ['image', 'description', 'submit'].indexOf(step) >= i
-                    ? 'bg-rose-500'
-                    : 'bg-gray-200'
+                className={`w-3 h-3 rounded-full transition-colors ${
+                  stepIndex >= i
+                    ? 'bg-[#FD7979]'
+                    : 'bg-[#FEEAC9]'
                 }`}
               />
             ))}
@@ -143,15 +145,21 @@ export const DistressCall = () => {
         </h1>
 
         {/* Location Status */}
-        <Card className="mb-6">
+        <Card className={`mb-6 ${coordinates ? 'bg-[#FEEAC9]/30' : ''}`}>
           <CardBody className="flex items-center gap-3">
-            <FiMapPin className={`h-5 w-5 ${coordinates ? 'text-green-500' : 'text-gray-400'}`} />
+            <div className={`p-2 rounded-lg ${coordinates ? 'bg-[#FEEAC9]' : 'bg-gray-100'}`}>
+              {coordinates ? (
+                <FiCheck className="h-5 w-5 text-[#FD7979]" />
+              ) : (
+                <FiMapPin className="h-5 w-5 text-gray-400" />
+              )}
+            </div>
             {locationLoading ? (
               <span className="text-gray-500">Getting your location...</span>
             ) : locationError ? (
-              <span className="text-red-500 text-sm">{locationError}</span>
+              <span className="text-[#FD7979] text-sm">{locationError}</span>
             ) : (
-              <span className="text-green-600">Location acquired</span>
+              <span className="text-gray-700 font-medium">Location acquired</span>
             )}
           </CardBody>
         </Card>
@@ -225,14 +233,14 @@ export const DistressCall = () => {
                     <img
                       src={imageUrl}
                       alt="Emergency"
-                      className="w-full h-32 object-cover rounded-lg"
+                      className="w-full h-32 object-cover rounded-xl border-2 border-[#FEEAC9]"
                     />
                   </div>
                 )}
 
                 <div className="mb-4">
                   <p className="text-sm text-gray-500 mb-2">Description</p>
-                  <p className="text-gray-900">{description}</p>
+                  <p className="text-gray-900 bg-[#FEEAC9]/30 p-3 rounded-xl">{description}</p>
                 </div>
 
                 <div className="mt-6 flex justify-between">
@@ -264,7 +272,7 @@ export const DistressCall = () => {
 
         {/* Submitting Overlay */}
         {isSubmitting && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
             <Card className="mx-4 max-w-sm">
               <CardBody className="text-center py-8">
                 <Loader size="lg" />

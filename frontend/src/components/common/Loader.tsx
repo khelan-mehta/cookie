@@ -7,7 +7,7 @@ interface LoaderProps {
 
 export const Loader = ({
   size = 'md',
-  color = 'text-rose-500',
+  color = 'text-[#FD7979]',
   fullScreen = false,
   text,
 }: LoaderProps) => {
@@ -45,7 +45,7 @@ export const Loader = ({
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50">
+      <div className="fixed inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-50">
         {spinner}
       </div>
     );
@@ -55,7 +55,7 @@ export const Loader = ({
 };
 
 export const PageLoader = ({ text = 'Loading...' }: { text?: string }) => (
-  <div className="min-h-screen flex items-center justify-center">
+  <div className="min-h-screen flex items-center justify-center bg-[#FFFBF5]">
     <Loader size="lg" text={text} />
   </div>
 );

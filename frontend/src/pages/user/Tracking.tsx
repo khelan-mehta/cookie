@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { FiCheck, FiX, FiPhone } from "react-icons/fi";
@@ -12,6 +12,7 @@ import { VetResponseList } from "../../components/distress/VetResponseCard";
 import { ConfirmModal } from "../../components/common/Modal";
 import { useDistress } from "../../context/DistressContext";
 import { usePolling } from "../../hooks/usePolling";
+import { locationService } from "../../services/location";
 import { distressService, type Distress } from "../../services/distress";
 import { ROUTES, DISTRESS_STATUS } from "../../utils/constants";
 
@@ -34,6 +35,70 @@ export const Tracking = () => {
     lat: number;
     lng: number;
   } | null>(null);
+  const [userCurrentLocation, setUserCurrentLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+
+  const locationWatchIdRef = useRef<number | null>(null);
+  const locationUpdateIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Start watching user location and send updates
+  useEffect(() => {
+    if (!activeDistress?._id) return;
+
+    // Get initial position
+    locationService.getCurrentPosition()
+      .then((position) => {
+        const coords: [number, number] = [position.coords.longitude, position.coords.latitude];
+        setUserCurrentLocation({ lng: coords[0], lat: coords[1] });
+        // Send initial location update
+        locationService.updateDistressLocation(activeDistress._id, coords);
+      })
+      .catch((err) => {
+        console.error("Failed to get initial position:", err);
+      });
+
+    // Watch position continuously
+    locationWatchIdRef.current = locationService.watchPosition(
+      (position) => {
+        const coords: [number, number] = [position.coords.longitude, position.coords.latitude];
+        setUserCurrentLocation({ lng: coords[0], lat: coords[1] });
+      },
+      (error) => {
+        console.error("Location watch error:", error);
+      }
+    );
+
+    // Send location updates to server every 5 seconds
+    locationUpdateIntervalRef.current = setInterval(() => {
+      if (userCurrentLocation && activeDistress?._id) {
+        locationService.updateDistressLocation(activeDistress._id, [
+          userCurrentLocation.lng,
+          userCurrentLocation.lat,
+        ]).catch(console.error);
+      }
+    }, 5000);
+
+    return () => {
+      if (locationWatchIdRef.current !== null) {
+        locationService.clearWatch(locationWatchIdRef.current);
+      }
+      if (locationUpdateIntervalRef.current) {
+        clearInterval(locationUpdateIntervalRef.current);
+      }
+    };
+  }, [activeDistress?._id]);
+
+  // Update location when userCurrentLocation changes
+  useEffect(() => {
+    if (userCurrentLocation && activeDistress?._id) {
+      locationService.updateDistressLocation(activeDistress._id, [
+        userCurrentLocation.lng,
+        userCurrentLocation.lat,
+      ]).catch(console.error);
+    }
+  }, [userCurrentLocation, activeDistress?._id]);
 
   const handleDistressUpdated = useCallback(() => {
     refreshActiveDistress();
@@ -140,12 +205,13 @@ export const Tracking = () => {
     );
   }
 
-  const userLocation = activeDistress.location?.coordinates
+  // Use real-time user location if available, otherwise fall back to initial distress location
+  const userLocation = userCurrentLocation || (activeDistress.location?.coordinates
     ? {
         lng: activeDistress.location.coordinates[0],
         lat: activeDistress.location.coordinates[1],
       }
-    : undefined;
+    : undefined);
 
   const selectedVetLocation = activeDistress.selectedVetId?.location
     ?.coordinates
@@ -164,8 +230,8 @@ export const Tracking = () => {
         <Card
           className={`mb-6 ${
             isInProgress
-              ? "bg-green-50 border-green-200"
-              : "bg-amber-50 border-amber-200"
+              ? "bg-[#FEEAC9] border-[#FDACAC]"
+              : "bg-[#FFCDC9] border-[#FDACAC]"
           }`}
         >
           <CardBody>
@@ -185,8 +251,8 @@ export const Tracking = () => {
               <div
                 className={`px-3 py-1 rounded-full text-sm font-medium ${
                   isInProgress
-                    ? "bg-green-100 text-green-800"
-                    : "bg-amber-100 text-amber-800"
+                    ? "bg-[#FEEAC9] text-gray-800 border border-[#FDACAC]"
+                    : "bg-[#FD7979] text-white"
                 }`}
               >
                 {activeDistress.status.replace("_", " ").toUpperCase()}
@@ -265,7 +331,7 @@ export const Tracking = () => {
                     </div>
                     <a
                       href={`tel:${activeDistress.userId.phone}`}
-                      className="p-3 bg-green-100 text-green-600 rounded-full hover:bg-green-200"
+                      className="p-3 bg-[#FEEAC9] text-[#FD7979] rounded-full hover:bg-[#FFCDC9] transition-colors"
                     >
                       <FiPhone className="h-5 w-5" />
                     </a>

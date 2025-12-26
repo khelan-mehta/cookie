@@ -16,11 +16,12 @@ export const DISTRESS_STATUS = {
   CANCELLED: 'cancelled',
 } as const;
 
+// Cookie color palette based severity colors
 export const SEVERITY_COLORS = {
-  low: 'bg-green-100 text-green-800',
-  medium: 'bg-yellow-100 text-yellow-800',
-  high: 'bg-orange-100 text-orange-800',
-  critical: 'bg-red-100 text-red-800',
+  low: 'bg-[#FEEAC9] text-gray-800',
+  medium: 'bg-[#FFCDC9] text-gray-800',
+  high: 'bg-[#FDACAC] text-gray-800',
+  critical: 'bg-[#FD7979] text-white',
 } as const;
 
 export const ROUTES = {

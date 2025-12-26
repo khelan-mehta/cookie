@@ -25,7 +25,7 @@ export const Login = () => {
 
     try {
       const response = await authService.googleAuth({
-        idToken: credentialResponse.credential, // ✅ JWT ID TOKEN
+        idToken: credentialResponse.credential,
       });
 
       if (response.registered && response.token && response.user) {
@@ -48,25 +48,27 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-rose-50 to-white px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFFBF5] px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="text-5xl">🐾</span>
+            <div className="w-20 h-20 bg-[#FD7979] rounded-2xl flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-4xl">C</span>
+            </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900">Cookie</h1>
-          <p className="text-gray-600 mt-2 flex items-center justify-center gap-1">
-            Every life deserves a life <FiHeart className="text-rose-500" />
+          <p className="text-gray-600 mt-2 flex items-center justify-center gap-1.5">
+            Every life deserves care <FiHeart className="text-[#FD7979]" />
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+        <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#FEEAC9]">
           <h2 className="text-xl font-semibold text-gray-900 text-center mb-6">
             Welcome
           </h2>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+            <div className="mb-4 p-3 bg-[#FD7979]/10 text-[#FD7979] rounded-xl text-sm border border-[#FDACAC]">
               {error}
             </div>
           )}
@@ -85,7 +87,7 @@ export const Login = () => {
 
           {isLoading && (
             <p className="mt-4 text-center text-sm text-gray-500">
-              Signing you in…
+              Signing you in...
             </p>
           )}
 
