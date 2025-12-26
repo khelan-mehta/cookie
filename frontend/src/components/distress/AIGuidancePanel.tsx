@@ -49,7 +49,7 @@ export const AIGuidancePanel = ({
           <FiAlertCircle className="h-5 w-5 text-rose-500" />
           <span className="font-semibold text-gray-900">AI Guidance</span>
           <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${severityColor}`}>
-            {analysis.severity.toUpperCase()}
+            {analysis?.severity?.toUpperCase()}
           </span>
         </div>
         {collapsible && (
