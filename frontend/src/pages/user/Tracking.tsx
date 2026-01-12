@@ -94,7 +94,7 @@ export const Tracking = () => {
 
   usePolling({
     distressId: activeDistress?._id,
-    pollingInterval: 3000,
+    pollingInterval: 10000, // Reduced API calls: 10 seconds instead of 3
     onDistressUpdated: handleDistressUpdated,
     onDistressResolved: () => {
       toast.success("Emergency resolved!");

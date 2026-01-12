@@ -8,6 +8,7 @@ import { Button } from '../../components/common/Button';
 import { TextArea } from '../../components/common/Input';
 import { ImageUpload } from '../../components/distress/ImageUpload';
 import { AIGuidancePanel } from '../../components/distress/AIGuidancePanel';
+import { SimilarQueriesSuggestion } from '../../components/distress/SimilarQueriesSuggestion';
 import { Loader } from '../../components/common/Loader';
 import { useLocation } from '../../hooks/useLocation';
 import { useDistress } from '../../context/DistressContext';
@@ -123,17 +124,17 @@ export const DistressCall = () => {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => navigate(ROUTES.DASHBOARD)}
-            className="flex items-center gap-2 text-[#5D4E4E] hover:text-[#FD7979] transition-colors font-medium"
+            className="flex items-center gap-1 sm:gap-2 text-[#5D4E4E] hover:text-[#FD7979] transition-colors font-medium text-sm sm:text-base"
           >
-            <FiArrowLeft className="h-5 w-5" />
-            Back
+            <FiArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+            <span className="hidden sm:inline">Back</span>
           </button>
-          <h1 className="text-xl font-bold text-[#5D4E4E]">Report Emergency</h1>
-          <div className="w-16"></div>
+          <h1 className="text-lg sm:text-xl font-bold text-[#5D4E4E]">Report Emergency</h1>
+          <div className="w-8 sm:w-16"></div>
         </div>
 
         {/* Progress Steps */}
-        <div className="flex items-center justify-center gap-3 mb-8">
+        <div className="flex items-center justify-center gap-1 sm:gap-3 mb-8 overflow-x-auto px-2">
           {steps.map((s, i) => {
             const Icon = s.icon;
             const isCompleted = i < currentStepIndex;
@@ -142,22 +143,22 @@ export const DistressCall = () => {
               <div key={s.key} className="flex items-center">
                 <div className="flex flex-col items-center">
                   <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                    className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all ${
                       isCompleted
-                        ? 'bg-[#10B981] border-2 border-[#059669] shadow-[0_3px_0_#059669]'
+                        ? 'bg-[#10B981] border-2 border-[#059669] shadow-[0_2px_0_#059669] sm:shadow-[0_3px_0_#059669]'
                         : isCurrent
-                        ? 'bg-[#FD7979] border-2 border-[#E05A5A] shadow-[0_3px_0_#E05A5A]'
+                        ? 'bg-[#FD7979] border-2 border-[#E05A5A] shadow-[0_2px_0_#E05A5A] sm:shadow-[0_3px_0_#E05A5A]'
                         : 'bg-white border-2 border-[#FFCDC9]'
                     }`}
                   >
-                    <Icon className={`h-5 w-5 ${isCompleted || isCurrent ? 'text-white' : 'text-[#FDACAC]'}`} />
+                    <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${isCompleted || isCurrent ? 'text-white' : 'text-[#FDACAC]'}`} />
                   </div>
-                  <span className={`text-xs mt-2 font-medium ${isCurrent ? 'text-[#FD7979]' : 'text-[#5D4E4E] opacity-70'}`}>
+                  <span className={`text-[10px] sm:text-xs mt-1 sm:mt-2 font-medium whitespace-nowrap ${isCurrent ? 'text-[#FD7979]' : 'text-[#5D4E4E] opacity-70'}`}>
                     {s.label}
                   </span>
                 </div>
                 {i < steps.length - 1 && (
-                  <div className={`w-12 h-1 mx-2 rounded-full ${i < currentStepIndex ? 'bg-[#10B981]' : 'bg-[#FFCDC9]'}`} />
+                  <div className={`w-8 sm:w-12 h-1 mx-1 sm:mx-2 rounded-full ${i < currentStepIndex ? 'bg-[#10B981]' : 'bg-[#FFCDC9]'}`} />
                 )}
               </div>
             );
@@ -196,7 +197,7 @@ export const DistressCall = () => {
                 onClear={() => setImageUrl(undefined)}
               />
               <div className="mt-6 flex justify-end">
-                <Button onClick={handleNextStep}>
+                <Button onClick={handleNextStep} className="w-full sm:w-auto">
                   Next
                   <FiArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -223,12 +224,21 @@ export const DistressCall = () => {
                 rows={6}
                 helperText={`${description.length} characters (minimum 10)`}
               />
-              <div className="mt-6 flex justify-between">
-                <Button variant="ghost" onClick={handlePreviousStep}>
+
+              {/* Similar Queries Suggestion */}
+              <SimilarQueriesSuggestion
+                query={description}
+                onSelectQuery={(selectedQuery) => {
+                  setDescription(selectedQuery);
+                }}
+              />
+
+              <div className="mt-6 flex flex-col sm:flex-row justify-between gap-3">
+                <Button variant="ghost" onClick={handlePreviousStep} className="w-full sm:w-auto order-2 sm:order-1">
                   <FiArrowLeft className="mr-2 h-4 w-4" />
                   Back
                 </Button>
-                <Button onClick={handleNextStep}>
+                <Button onClick={handleNextStep} className="w-full sm:w-auto order-1 sm:order-2">
                   Next
                   <FiArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -252,7 +262,7 @@ export const DistressCall = () => {
                     <img
                       src={imageUrl}
                       alt="Emergency"
-                      className="w-full h-32 object-cover rounded-xl border-2 border-[#FFCDC9]"
+                      className="w-full h-48 sm:h-32 object-cover rounded-xl border-2 border-[#FFCDC9]"
                     />
                   </div>
                 )}
@@ -264,8 +274,8 @@ export const DistressCall = () => {
                   </div>
                 </div>
 
-                <div className="mt-6 flex justify-between">
-                  <Button variant="ghost" onClick={handlePreviousStep}>
+                <div className="mt-6 flex flex-col sm:flex-row justify-between gap-3">
+                  <Button variant="ghost" onClick={handlePreviousStep} className="w-full sm:w-auto order-2 sm:order-1">
                     <FiArrowLeft className="mr-2 h-4 w-4" />
                     Back
                   </Button>
@@ -274,6 +284,7 @@ export const DistressCall = () => {
                     isLoading={isSubmitting}
                     disabled={!coordinates}
                     size="lg"
+                    className="w-full sm:w-auto order-1 sm:order-2"
                   >
                     Submit Emergency
                   </Button>

@@ -62,13 +62,45 @@ class AIService {
         throw new Error('No response from AI');
       }
 
-      const analysis = JSON.parse(content);
+      // Improved JSON parsing with validation
+      let analysis;
+      try {
+        analysis = JSON.parse(content);
+      } catch (parseError) {
+        logger.error('Failed to parse AI response as JSON:', parseError);
+        logger.error('AI raw response:', content);
+
+        // Attempt to extract JSON from markdown code blocks if present
+        const jsonMatch = content.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+        if (jsonMatch) {
+          try {
+            analysis = JSON.parse(jsonMatch[1]);
+            logger.info('Successfully extracted JSON from markdown block');
+          } catch {
+            throw new Error('Failed to parse extracted JSON');
+          }
+        } else {
+          throw new Error('Invalid JSON response from AI');
+        }
+      }
+
+      // Validate and normalize severity
+      const validSeverities = ['low', 'medium', 'high', 'critical'];
+      const severity = validSeverities.includes(analysis.severity)
+        ? analysis.severity
+        : 'medium';
 
       return {
-        severity: analysis.severity || 'medium',
-        suggestions: analysis.suggestions || [],
-        possibleConditions: analysis.possibleConditions || [],
-        immediateSteps: analysis.immediateSteps || [],
+        severity,
+        suggestions: Array.isArray(analysis.suggestions)
+          ? analysis.suggestions.filter((s: unknown) => typeof s === 'string')
+          : [],
+        possibleConditions: Array.isArray(analysis.possibleConditions)
+          ? analysis.possibleConditions.filter((c: unknown) => typeof c === 'string')
+          : [],
+        immediateSteps: Array.isArray(analysis.immediateSteps)
+          ? analysis.immediateSteps.filter((s: unknown) => typeof s === 'string')
+          : [],
         disclaimer:
           'This AI analysis is advisory only and should not replace professional veterinary care. Please seek immediate help from a qualified veterinarian.',
       };

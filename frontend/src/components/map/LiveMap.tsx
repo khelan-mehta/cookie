@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useMemo, useRef } from 'react';
 import {
   GoogleMap,
   useJsApiLoader,
@@ -65,28 +65,70 @@ export const LiveMap = ({
   const [directions, setDirections] =
     useState<google.maps.DirectionsResult | null>(null);
 
-  const center = userLocation || vetLocation || defaultCenter;
+  // Prevent excessive API calls by tracking last fetch
+  const lastFetchParamsRef = useRef<string>('');
+  const fetchTimeoutRef = useRef<NodeJS.Timeout>();
+
+  const center = useMemo(
+    () => userLocation || vetLocation || defaultCenter,
+    [userLocation?.lat, userLocation?.lng, vetLocation?.lat, vetLocation?.lng]
+  );
 
   const fetchDirections = useCallback(() => {
-    if (!showRoute || !userLocation || !vetLocation || !isLoaded) return;
+    if (!showRoute || !userLocation || !vetLocation || !isLoaded) {
+      setDirections(null);
+      return;
+    }
 
-    const directionsService = new google.maps.DirectionsService();
-    directionsService.route(
-      {
-        origin: userLocation,
-        destination: vetLocation,
-        travelMode: google.maps.TravelMode.DRIVING,
-      },
-      (result, status) => {
-        if (status === 'OK' && result) {
-          setDirections(result);
+    // Create unique key for this route
+    const currentParams = `${userLocation.lat},${userLocation.lng}-${vetLocation.lat},${vetLocation.lng}`;
+
+    // Skip if same route already fetched
+    if (currentParams === lastFetchParamsRef.current) {
+      return;
+    }
+
+    // Debounce to prevent rapid API calls
+    if (fetchTimeoutRef.current) {
+      clearTimeout(fetchTimeoutRef.current);
+    }
+
+    fetchTimeoutRef.current = setTimeout(() => {
+      lastFetchParamsRef.current = currentParams;
+
+      const directionsService = new google.maps.DirectionsService();
+      directionsService.route(
+        {
+          origin: userLocation,
+          destination: vetLocation,
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === 'OK' && result) {
+            setDirections(result);
+          } else {
+            console.warn('Directions request failed:', status);
+          }
         }
-      }
-    );
-  }, [showRoute, userLocation, vetLocation, isLoaded]);
+      );
+    }, 1000); // 1 second debounce
+  }, [
+    showRoute,
+    userLocation?.lat,
+    userLocation?.lng,
+    vetLocation?.lat,
+    vetLocation?.lng,
+    isLoaded
+  ]);
 
   useEffect(() => {
     fetchDirections();
+
+    return () => {
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+      }
+    };
   }, [fetchDirections]);
 
   const handleMapClick = useCallback(

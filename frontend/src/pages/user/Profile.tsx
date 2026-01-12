@@ -85,8 +85,8 @@ export const Profile = () => {
         {/* Profile Info */}
         <Card className="mb-6">
           <CardBody>
-            <div className="flex items-start gap-4">
-              <div className="relative">
+            <div className="flex flex-col sm:flex-row items-start gap-4">
+              <div className="relative mx-auto sm:mx-0">
                 {user?.avatar ? (
                   <img
                     src={user.avatar}
@@ -100,15 +100,15 @@ export const Profile = () => {
                 )}
               </div>
 
-              <div className="flex-1">
+              <div className="flex-1 w-full text-center sm:text-left">
                 <h2 className="text-xl font-bold text-[#5D4E4E]">{user?.name}</h2>
-                <div className="flex items-center gap-2 text-[#5D4E4E] opacity-70 mt-2">
-                  <FiMail className="h-4 w-4" />
-                  <span className="text-sm">{user?.email}</span>
+                <div className="flex items-center justify-center sm:justify-start gap-2 text-[#5D4E4E] opacity-70 mt-2">
+                  <FiMail className="h-4 w-4 flex-shrink-0" />
+                  <span className="text-sm truncate">{user?.email}</span>
                 </div>
                 {user?.phone && (
-                  <div className="flex items-center gap-2 text-[#5D4E4E] opacity-70 mt-1">
-                    <FiPhone className="h-4 w-4" />
+                  <div className="flex items-center justify-center sm:justify-start gap-2 text-[#5D4E4E] opacity-70 mt-1">
+                    <FiPhone className="h-4 w-4 flex-shrink-0" />
                     <span className="text-sm">{user.phone}</span>
                   </div>
                 )}
@@ -118,7 +118,7 @@ export const Profile = () => {
                 </span>
               </div>
 
-              <Button variant="ghost" onClick={handleEdit} size="sm">
+              <Button variant="ghost" onClick={handleEdit} size="sm" className="w-full sm:w-auto">
                 <FiEdit2 className="h-4 w-4 mr-1" />
                 Edit
               </Button>
@@ -151,21 +151,23 @@ export const Profile = () => {
                 {history?.distresses.map((distress) => (
                   <div
                     key={distress._id}
-                    className="flex items-start gap-3 p-4 bg-[#FFF9F0] rounded-xl border-2 border-[#FEEAC9]"
+                    className="flex flex-col sm:flex-row items-start gap-3 p-4 bg-[#FFF9F0] rounded-xl border-2 border-[#FEEAC9]"
                   >
-                    <div className="p-2 bg-[#FFCDC9] rounded-full">
-                      <FiClock className="h-4 w-4 text-[#FD7979]" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-[#5D4E4E] line-clamp-2 font-medium">
-                        {distress.description}
-                      </p>
-                      <p className="text-sm text-[#5D4E4E] opacity-70 mt-1">
-                        {formatDateTime(distress.createdAt)}
-                      </p>
+                    <div className="flex items-start gap-3 flex-1 w-full">
+                      <div className="p-2 bg-[#FFCDC9] rounded-full flex-shrink-0">
+                        <FiClock className="h-4 w-4 text-[#FD7979]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[#5D4E4E] line-clamp-2 font-medium break-words">
+                          {distress.description}
+                        </p>
+                        <p className="text-sm text-[#5D4E4E] opacity-70 mt-1">
+                          {formatDateTime(distress.createdAt)}
+                        </p>
+                      </div>
                     </div>
                     <span
-                      className={`px-3 py-1 text-xs rounded-full font-semibold capitalize ${getStatusStyle(distress.status)}`}
+                      className={`px-3 py-1 text-xs rounded-full font-semibold capitalize whitespace-nowrap ${getStatusStyle(distress.status)}`}
                     >
                       {distress.status}
                     </span>

@@ -291,12 +291,17 @@ export const selectVet = async (
     await distress.save();
 
     const selectedVet = await Vet.findById(vetId);
-    const otherVetIds = distress.responses
+
+    // Get User IDs of other responding vets (not Vet Profile IDs)
+    const otherVetProfileIds = distress.responses
       .filter((r) => r.vetId.toString() !== vetId)
-      .map((r) => r.vetId.toString());
+      .map((r) => r.vetId);
+
+    const otherVets = await Vet.find({ _id: { $in: otherVetProfileIds } });
+    const otherVetUserIds = otherVets.map((v) => v.userId.toString());
 
     if (selectedVet) {
-      socketService.notifyVetSelected(id, selectedVet.userId.toString(), otherVetIds);
+      socketService.notifyVetSelected(id, selectedVet.userId.toString(), otherVetUserIds);
     }
 
     res.json({

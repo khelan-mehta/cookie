@@ -58,7 +58,7 @@ export const DistressList = () => {
   }, [updateVetLocationAndLoad, loadDistresses]);
 
   usePolling({
-    pollingInterval: 5000,
+    pollingInterval: 15000, // Reduced API calls: 15 seconds instead of 5
     onNewDistress: (data) => {
       if (data.distresses && data.distresses.length > 0) {
         loadDistresses();
