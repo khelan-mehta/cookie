@@ -2,8 +2,7 @@
 
 # Setup Guide
 
-A modern **full-stack web application** with authentication, AI integration, cloud storage, and maps support.
-Follow the steps below and you’ll be **up and running in minutes**.
+Presenting You **Cookie** - An animal care platform 
 
 ---
 
