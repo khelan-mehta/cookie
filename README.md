@@ -142,10 +142,4 @@ The frontend will be available at `http://localhost:5173` by default.
 
 And you would be up and running.
 
-If you want, I can:
-
-* Add status or tech badges
-* Write a deployment section
-* Create an ultra-minimal README
-* Optimize this README for open-source or portfolio use
 
