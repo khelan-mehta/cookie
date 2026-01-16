@@ -9,7 +9,7 @@ Presenting You **Cookie** - An animal care platform
 ## Demo Video
 
 **Walkthrough:**
-[https://drive.google.com/file/d/1lesNWIk4y7lBmIhZxQE5iGu_VIe_bjAJ/view?usp=drivesdk](https://drive.google.com/file/d/1lesNWIk4y7lBmIhZxQE5iGu_VIe_bjAJ/view?usp=drivesdk)
+[https://drive.google.com/file/d/1lesNWIk4y7lBmIhZxQE5iGu_VIe_bjAJ/view?usp=drivesdk](https://drive.google.com/file/d/1lesNWIk4y7lBmIhZxQE5iGu_VIe_bjAJ/view?usp=drivesdk)](https://drive.google.com/file/d/1CwwSdzwHvaB_cGlb8uFPqjcZvkcoIJB1/view?usp=sharing)
 
 ---
 
